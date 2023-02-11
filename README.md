@@ -24,7 +24,7 @@ UidGenerator是Java实现的, 基于[Snowflake](https://github.com/twitter/snowf
 
 ### Maven 
 
-### spring boot autoconfig 方式
+#### spring boot autoconfig 方式
 ```xml
 <dependency>
     <groupId>uid-generator-spring-boot-starter</groupId>
@@ -64,7 +64,8 @@ UidGenerator是Java实现的, 基于[Snowflake](https://github.com/twitter/snowf
 </dependency>
 
 ```
-### spring方式 请参见 [百度UidGenerator](https://github.com/baidu/uid-generator)
+
+
 
 ### 数据库（可选）
 如果使用数据库实现的Worker node id分配器,需要先建立表 WORKER_NODE, 脚本：
