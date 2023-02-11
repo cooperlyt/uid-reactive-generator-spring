@@ -67,7 +67,7 @@ UidGenerator是Java实现的, 基于[Snowflake](https://github.com/twitter/snowf
 ### spring方式 请参见 [百度UidGenerator](https://github.com/baidu/uid-generator)
 
 ### 数据库（可选）
-如使用数据库实现的Worker node id分配器,需要先建立表 WORKER_NODE, 脚本：
+如果使用数据库实现的Worker node id分配器,需要先建立表 WORKER_NODE, 脚本：
 ```sql
 DROP TABLE IF EXISTS WORKER_NODE;
 CREATE TABLE WORKER_NODE
@@ -159,3 +159,29 @@ spring:
   }
   
 ```
+
+### 使用
+
+
+```java
+
+//实时生成
+//@Resource
+//private UidGenerator defaultUidGenerator;
+
+//生成一次id之后，按序列号+1生成一批id，缓存，供之后请求 
+@Resource
+private UidGenerator cachedUidGenerator;
+
+@Test
+public void testSerialGenerate() {
+    // Generate UID
+    long uid = cachedUidGenerator.getUID();
+
+    // Parse UID into [Timestamp, WorkerId, Sequence]
+    // {"UID":"450795408770","timestamp":"2019-02-20 14:55:39","workerId":"27","sequence":"2"}
+    System.out.println(cachedUidGenerator.parseUID(uid));
+
+}
+```
+**defaultUidGenerator** 和 **cachedUidGenerator** 的区别和选择方式请参见 [百度UidGenerator](https://github.com/baidu/uid-generator)
