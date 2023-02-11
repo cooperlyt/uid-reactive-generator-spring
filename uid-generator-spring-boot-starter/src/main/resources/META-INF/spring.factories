@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=cc.coopersoft.cloud.uid.UidAutoConfigure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=io.github.cooperlyt.cloud.uid.UidAutoConfigure

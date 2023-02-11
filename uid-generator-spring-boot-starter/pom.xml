@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>cc.coopersoft</groupId>
+        <groupId>io.github.cooperlyt</groupId>
         <artifactId>uid-generator-spring-boot</artifactId>
         <version>1.0.1.BATE</version>
     </parent>
@@ -25,7 +25,7 @@
         </dependency>
 
         <dependency>
-            <groupId>cc.coopersoft</groupId>
+            <groupId>io.github.cooperlyt</groupId>
             <artifactId>uid-generator</artifactId>
             <version>1.0.1.BATE</version>
         </dependency>
@@ -34,7 +34,7 @@
         <!-- test by jdbc and mariadb -->
 
 <!--        <dependency>-->
-<!--            <groupId>cc.coopersoft</groupId>-->
+<!--            <groupId>cooperlyt.github.io</groupId>-->
 <!--            <artifactId>uid-worker-id-jdbc-spring-boot-starter</artifactId>-->
 <!--            <version>1.0.1.BATE</version>-->
 <!--            <scope>test</scope>-->
@@ -48,7 +48,7 @@
 
         <!-- test by r2dbc and mariadb -->
         <dependency>
-            <groupId>cc.coopersoft</groupId>
+            <groupId>io.github.cooperlyt</groupId>
             <artifactId>uid-worker-id-r2dbc-spring-boot-starter</artifactId>
             <version>1.0.1.BATE</version>
             <scope>test</scope>

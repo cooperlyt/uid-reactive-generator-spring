@@ -24,5 +24,3 @@ logging:
   level:
     pro.chenggang: DEBUG
     org.springframework.r2dbc: DEBUG
-  file:
-    path: ./logs

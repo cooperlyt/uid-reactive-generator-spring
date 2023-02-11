@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=cc.coopersoft.cloud.uid.worker.jdbc.JDBCWorkerIdAssigner
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=io.github.cooperlyt.cloud.uid.worker.jdbc.JDBCWorkerIdAssigner
