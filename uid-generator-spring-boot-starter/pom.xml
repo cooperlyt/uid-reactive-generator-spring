@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.github.cooperlyt</groupId>
         <artifactId>uid-generator-spring-boot</artifactId>
-        <version>1.0.1.BATE</version>
+        <version>1.0.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>uid-generator-spring-boot-starter</artifactId>
@@ -27,7 +27,7 @@
         <dependency>
             <groupId>io.github.cooperlyt</groupId>
             <artifactId>uid-generator</artifactId>
-            <version>1.0.1.BATE</version>
+            <version>1.0.2-SNAPSHOT</version>
         </dependency>
 
 
@@ -50,7 +50,7 @@
         <dependency>
             <groupId>io.github.cooperlyt</groupId>
             <artifactId>uid-worker-id-r2dbc-spring-boot-starter</artifactId>
-            <version>1.0.1.BATE</version>
+            <version>1.0.2-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
