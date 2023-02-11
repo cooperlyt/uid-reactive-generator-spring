@@ -1,6 +1,5 @@
-package cc.coopersoft.cloud.uid.mapper;
+package cc.coopersoft.cloud.uid.worker.jdbc;
 
-import cc.coopersoft.cloud.uid.worker.jdbc.UidJDBCWorkerConfigure;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -15,6 +14,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class UidTestApplication {
 	
 	public static void main(String[] args) {
-		SpringApplication.run(UidJDBCWorkerConfigure.class, args);
+		SpringApplication.run(UidTestApplication.class, args);
 	}
 }

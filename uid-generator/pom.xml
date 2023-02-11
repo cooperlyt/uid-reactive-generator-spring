@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.example</groupId>
+        <groupId>cc.coopersoft</groupId>
         <artifactId>uid-generator-spring-boot</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.1.BATE</version>
     </parent>
 
     <artifactId>uid-generator</artifactId>
@@ -15,6 +15,26 @@
         <maven.compiler.source>15</maven.compiler.source>
         <maven.compiler.target>15</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cc.coopersoft</groupId>
+            <artifactId>uid-generator-api</artifactId>
+            <version>1.0.1.BATE</version>
+        </dependency>
+    </dependencies>
 
 </project>

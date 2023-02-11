@@ -1,8 +1,8 @@
-package cc.coopersoft.cloud.uid;
+package cc.coopersoft.cloud.uid.impl;
 
+import cc.coopersoft.cloud.uid.UidProperties;
 import cc.coopersoft.cloud.uid.utils.DateUtils;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.concurrent.TimeUnit;
 
@@ -12,14 +12,8 @@ import java.util.concurrent.TimeUnit;
  * @author wujun
  * @date 2019.02.20 10:31
  */
-@ConfigurationProperties(prefix = "uid")
 public class UidConfigProperties implements UidProperties {
 
-    public UidConfigProperties(CachedProperties cachedProperties) {
-        this.cachedProperties = cachedProperties;
-    }
-
-    private final CachedProperties cachedProperties;
 
 
     /**
@@ -116,8 +110,4 @@ public class UidConfigProperties implements UidProperties {
         this.maxBackwardSeconds = maxBackwardSeconds;
     }
 
-    @Override
-    public CachedProperties getCachedProperties() {
-        return cachedProperties;
-    }
 }

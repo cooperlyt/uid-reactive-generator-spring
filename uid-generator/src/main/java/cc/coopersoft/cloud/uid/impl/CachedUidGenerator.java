@@ -15,10 +15,11 @@
  */
 package cc.coopersoft.cloud.uid.impl;
 
-import cc.coopersoft.cloud.uid.buffer.BufferPaddingExecutor;
-import cc.coopersoft.cloud.uid.buffer.RejectedPutBufferHandler;
-import cc.coopersoft.cloud.uid.buffer.RejectedTakeBufferHandler;
-import cc.coopersoft.cloud.uid.buffer.RingBuffer;
+import cc.coopersoft.cloud.uid.UidCachedProperties;
+import cc.coopersoft.cloud.uid.UidProperties;
+import cc.coopersoft.cloud.uid.buffer.*;
+import cc.coopersoft.cloud.uid.worker.WorkerIdAssigner;
+import cc.coopersoft.cloud.uid.exception.UidGenerateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 
@@ -46,43 +47,68 @@ import java.util.List;
 @Slf4j
 public class CachedUidGenerator extends DefaultUidGenerator implements DisposableBean {
 
-    private static final int DEFAULT_BOOST_POWER = 3;
-
-    // --------------------- 配置属性 begin ---------------------
-    /**
-     * RingBuffer size扩容参数, 可提高UID生成的吞吐量.
-     * 默认:3， 原bufferSize=8192, 扩容后bufferSize= 8192 << 3 = 65536
-     */
-    private int boostPower = DEFAULT_BOOST_POWER;
-    /**
-     * 指定何时向RingBuffer中填充UID, 取值为百分比(0, 100), 默认为50
-     * 举例: bufferSize=1024, paddingFactor=50 -> threshold=1024 * 50 / 100 = 512.
-     * 当环上可用UID数量 < 512时, 将自动对RingBuffer进行填充补全
-     */
-    private int paddingFactor = RingBuffer.DEFAULT_PADDING_PERCENT;
-    /**
-     * 另外一种RingBuffer填充时机, 在Schedule线程中, 周期性检查填充
-     * 默认:不配置此项, 即不使用Schedule线程. 如需使用, 请指定Schedule线程时间间隔, 单位:秒
-     */
-    private Long scheduleInterval;
-    // --------------------- 配置属性 end -----------------------
-
-    /** 拒绝策略: 当环已满, 无法继续填充时
-     默认无需指定, 将丢弃Put操作, 仅日志记录. 如有特殊需求, 请实现RejectedPutBufferHandler接口(支持Lambda表达式)并以@Autowired方式注入 */
-    private RejectedPutBufferHandler rejectedPutBufferHandler;
-
-    /** 拒绝策略: 当环已空, 无法继续获取时
-     默认无需指定, 将记录日志, 并抛出UidGenerateException异常. 如有特殊需求, 请实现RejectedTakeBufferHandler接口(支持Lambda表达式)并以@Autowired方式注入 */
-    private RejectedTakeBufferHandler rejectedTakeBufferHandler;
-
     /**
      * RingBuffer
      */
     private RingBuffer ringBuffer;
     private BufferPaddingExecutor bufferPaddingExecutor;
 
-    public CachedUidGenerator(UidProperties uidProperties) {
-        super(uidProperties);
+    /** 拒绝策略: 当环已满, 无法继续填充时
+     默认无需指定, 将丢弃Put操作, 仅日志记录. 如有特殊需求, 请实现RejectedPutBufferHandler接口(支持Lambda表达式)并以@Autowired方式注入 */
+    private final RejectedPutBufferHandler rejectedPutBufferHandler;
+
+    /** 拒绝策略: 当环已空, 无法继续获取时
+     默认无需指定, 将记录日志, 并抛出UidGenerateException异常. 如有特殊需求, 请实现RejectedTakeBufferHandler接口(支持Lambda表达式)并以@Autowired方式注入 */
+    private final RejectedTakeBufferHandler rejectedTakeBufferHandler;
+
+    private final UidCachedProperties uidCachedProperties;
+
+    public CachedUidGenerator(
+        UidProperties uidProperties,
+        UidCachedProperties uidCachedProperties,
+        WorkerIdAssigner workerIdAssigner,
+        RejectedPutBufferHandler rejectedPutBufferHandler,
+        RejectedTakeBufferHandler rejectedTakeBufferHandler
+    ) {
+        super(uidProperties, workerIdAssigner);
+        this.uidCachedProperties = uidCachedProperties;
+        this.rejectedTakeBufferHandler = rejectedTakeBufferHandler;
+        this.rejectedPutBufferHandler = rejectedPutBufferHandler;
+    }
+
+    public CachedUidGenerator(
+        UidProperties uidProperties,
+        UidCachedProperties uidCachedProperties,
+        WorkerIdAssigner workerIdAssigner,
+        RejectedTakeBufferHandler rejectedTakeBufferHandler
+    ) {
+        super(uidProperties, workerIdAssigner);
+        this.uidCachedProperties = uidCachedProperties;
+        this.rejectedTakeBufferHandler = rejectedTakeBufferHandler;
+        this.rejectedPutBufferHandler = null;
+    }
+
+    public CachedUidGenerator(
+        UidProperties uidProperties,
+        UidCachedProperties uidCachedProperties,
+        WorkerIdAssigner workerIdAssigner,
+        RejectedPutBufferHandler rejectedPutBufferHandler
+    ) {
+        super(uidProperties, workerIdAssigner);
+        this.uidCachedProperties = uidCachedProperties;
+        this.rejectedPutBufferHandler = rejectedPutBufferHandler;
+        this.rejectedTakeBufferHandler = null;
+    }
+
+    public CachedUidGenerator(
+        UidProperties uidProperties,
+        UidCachedProperties uidCachedProperties,
+        WorkerIdAssigner workerIdAssigner
+    ) {
+        super(uidProperties, workerIdAssigner);
+        this.uidCachedProperties = uidCachedProperties;
+        this.rejectedTakeBufferHandler = null;
+        this.rejectedPutBufferHandler = null;
     }
 
     @Override
@@ -135,30 +161,32 @@ public class CachedUidGenerator extends DefaultUidGenerator implements Disposabl
         return uidList;
     }
 
+
     /**
      * Initialize RingBuffer & RingBufferPaddingExecutor
      */
     private void initRingBuffer() {
         // initialize RingBuffer
-        int bufferSize = ((int) bitsAllocator.getMaxSequence() + 1) << boostPower;
-        this.ringBuffer = new RingBuffer(bufferSize, paddingFactor);
-        log.info("Initialized ring buffer size:{}, paddingFactor:{}", bufferSize, paddingFactor);
+        int bufferSize = ((int) bitsAllocator.getMaxSequence() + 1) << uidCachedProperties.getBoostPower();
+        this.ringBuffer = new RingBuffer(bufferSize, uidCachedProperties.getPaddingFactor());
+        log.info("Initialized ring buffer size:{}, paddingFactor:{}", bufferSize, uidCachedProperties.getPaddingFactor());
 
         // initialize RingBufferPaddingExecutor
-        boolean usingSchedule = (scheduleInterval != null);
+        boolean usingSchedule = (uidCachedProperties.getScheduleInterval() != null);
         this.bufferPaddingExecutor = new BufferPaddingExecutor(ringBuffer, this::nextIdsForOneSecond, usingSchedule);
         if (usingSchedule) {
-            bufferPaddingExecutor.setScheduleInterval(scheduleInterval);
+            bufferPaddingExecutor.setScheduleInterval(uidCachedProperties.getScheduleInterval());
         }
 
-        log.info("Initialized BufferPaddingExecutor. Using schdule:{}, interval:{}", usingSchedule, scheduleInterval);
+        log.info("Initialized BufferPaddingExecutor. Using schdule:{}, interval:{}", usingSchedule, uidCachedProperties.getScheduleInterval());
 
         // set rejected put/take handle policy
         this.ringBuffer.setBufferPaddingExecutor(bufferPaddingExecutor);
-        if (rejectedPutBufferHandler != null) {
+
+        if (rejectedPutBufferHandler != null){
             this.ringBuffer.setRejectedPutHandler(rejectedPutBufferHandler);
         }
-        if (rejectedTakeBufferHandler != null) {
+        if (rejectedTakeBufferHandler != null){
             this.ringBuffer.setRejectedTakeHandler(rejectedTakeBufferHandler);
         }
 
@@ -167,34 +195,6 @@ public class CachedUidGenerator extends DefaultUidGenerator implements Disposabl
 
         // start buffer padding threads
         bufferPaddingExecutor.start();
-    }
-
-    /**
-     * Setters for spring property
-     */
-    public void setBoostPower(int boostPower) {
-        assert boostPower > 0 : "Boost power must be positive!";
-        this.boostPower = boostPower;
-    }
-
-    public void setPaddingFactor(int paddingFactor) {
-        Assert.isTrue(paddingFactor > 0 && paddingFactor < 100, "padding factor must be in (0, 100)!");
-        this.paddingFactor = paddingFactor;
-    }
-
-    public void setRejectedPutBufferHandler(RejectedPutBufferHandler rejectedPutBufferHandler) {
-        Assert.notNull(rejectedPutBufferHandler, "RejectedPutBufferHandler can't be null!");
-        this.rejectedPutBufferHandler = rejectedPutBufferHandler;
-    }
-
-    public void setRejectedTakeBufferHandler(RejectedTakeBufferHandler rejectedTakeBufferHandler) {
-        Assert.notNull(rejectedTakeBufferHandler, "RejectedTakeBufferHandler can't be null!");
-        this.rejectedTakeBufferHandler = rejectedTakeBufferHandler;
-    }
-
-    public void setScheduleInterval(long scheduleInterval) {
-        Assert.isTrue(scheduleInterval > 0, "Schedule interval must positive!");
-        this.scheduleInterval = scheduleInterval;
     }
 
 }

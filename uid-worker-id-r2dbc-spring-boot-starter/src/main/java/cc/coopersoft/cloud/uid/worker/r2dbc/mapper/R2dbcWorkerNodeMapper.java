@@ -1,4 +1,4 @@
-package cc.coopersoft.cloud.uid.r2dbc.mapper;
+package cc.coopersoft.cloud.uid.worker.r2dbc.mapper;
 
 
 import cc.coopersoft.cloud.uid.worker.entity.WorkerNodeEntity;

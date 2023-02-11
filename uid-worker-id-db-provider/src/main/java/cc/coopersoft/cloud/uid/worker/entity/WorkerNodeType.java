@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cc.coopersoft.cloud.uid.worker;
+package cc.coopersoft.cloud.uid.worker.entity;
 
 import cc.coopersoft.cloud.uid.utils.ValuedEnum;
 
@@ -47,7 +47,7 @@ public enum WorkerNodeType implements ValuedEnum<Integer> {
     /**
      * Constructor with field of type
      */
-    private WorkerNodeType(Integer type) {
+    WorkerNodeType(Integer type) {
         this.type = type;
     }
 

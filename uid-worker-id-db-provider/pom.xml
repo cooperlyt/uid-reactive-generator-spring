@@ -6,7 +6,7 @@
     <parent>
         <groupId>cc.coopersoft</groupId>
         <artifactId>uid-generator-spring-boot</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.1.BATE</version>
     </parent>
 
     <artifactId>uid-worker-id-db-provider</artifactId>
@@ -16,5 +16,21 @@
         <maven.compiler.target>15</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>cc.coopersoft</groupId>
+            <artifactId>uid-generator-api</artifactId>
+            <version>1.0.1.BATE</version>
+        </dependency>
+
+    </dependencies>
 
 </project>

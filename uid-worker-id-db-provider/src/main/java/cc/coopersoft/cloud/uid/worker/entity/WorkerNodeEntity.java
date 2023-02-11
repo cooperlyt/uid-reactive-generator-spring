@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.wujun234.uid.worker.entity;
+package cc.coopersoft.cloud.uid.worker.entity;
 
-import java.util.Date;
-
-import com.github.wujun234.uid.worker.WorkerNodeType;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+
+import java.util.Date;
 
 /**
  * Entity for M_WORKER_NODE

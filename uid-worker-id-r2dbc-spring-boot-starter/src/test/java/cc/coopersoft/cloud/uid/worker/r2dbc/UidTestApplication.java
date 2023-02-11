@@ -1,4 +1,4 @@
-package cc.coopersoft.cloud.uid.worker.jdbc;
+package cc.coopersoft.cloud.uid.worker.r2dbc;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

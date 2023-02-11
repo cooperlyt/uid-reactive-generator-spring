@@ -1,15 +1,15 @@
-package com.github.wujun234.uid;
+package cc.coopersoft.cloud.uid;
 
-import com.github.wujun234.uid.impl.CachedUidGenerator;
-import com.github.wujun234.uid.impl.UidProperties;
-import com.github.wujun234.uid.worker.DisposableWorkerIdAssigner;
-import com.github.wujun234.uid.worker.WorkerIdAssigner;
-import com.github.wujun234.uid.impl.DefaultUidGenerator;
-import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import cc.coopersoft.cloud.uid.buffer.RejectedPutBufferHandler;
+import cc.coopersoft.cloud.uid.buffer.RejectedTakeBufferHandler;
+import cc.coopersoft.cloud.uid.impl.CachedUidGenerator;
+import cc.coopersoft.cloud.uid.impl.DefaultUidGenerator;
+import cc.coopersoft.cloud.uid.impl.UidCachedConfigProperties;
+import cc.coopersoft.cloud.uid.impl.UidConfigProperties;
+import cc.coopersoft.cloud.uid.worker.WorkerIdAssigner;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -20,35 +20,104 @@ import org.springframework.context.annotation.Lazy;
  * @author wujun
  * @date 2019.02.20 10:57
  */
+@Slf4j
 @Configuration
-@ConditionalOnClass({ DefaultUidGenerator.class, CachedUidGenerator.class })
-@MapperScan({ "com.github.wujun234.uid.worker.mapper" })
-@EnableConfigurationProperties(UidProperties.class)
 public class UidAutoConfigure {
 
-	private final UidProperties uidProperties;
 
-	public UidAutoConfigure(UidProperties uidProperties) {
-		this.uidProperties = uidProperties;
-	}
+  private final WorkerIdAssigner workerIdAssigner;
 
-	@Bean
-	@ConditionalOnMissingBean
-	@Lazy
-	DefaultUidGenerator defaultUidGenerator() {
-		return new DefaultUidGenerator(uidProperties);
-	}
+  //private final RejectedBufferConfigureImpl rejectedBufferConfigure;
 
-	@Bean
-	@ConditionalOnMissingBean
-	@Lazy
-	CachedUidGenerator cachedUidGenerator() {
-		return new CachedUidGenerator(uidProperties);
-	}
+  public UidAutoConfigure(WorkerIdAssigner workerIdAssigner) {
+    this.workerIdAssigner = workerIdAssigner;
+    //this.rejectedBufferConfigure = rejectedBufferConfigure;
+  }
 
-	@Bean
-	@ConditionalOnMissingBean
-	WorkerIdAssigner workerIdAssigner() {
-		return new DisposableWorkerIdAssigner();
-	}
+  @Bean
+  @ConditionalOnMissingBean
+  @Lazy
+  @ConfigurationProperties(prefix = "uid.cached-uid-generator")
+  UidCachedConfigProperties uidCachedProperties() {
+    return new UidCachedConfigProperties();
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  @Lazy
+  @ConfigurationProperties(prefix = "uid")
+  UidProperties uidProperties() {
+    return new UidConfigProperties();
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  @Lazy
+  DefaultUidGenerator defaultUidGenerator(UidProperties uidProperties) {
+    return new DefaultUidGenerator(uidProperties, workerIdAssigner);
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  @Lazy
+  CachedUidGenerator cachedUidGenerator(
+      UidProperties uidProperties,
+      UidCachedProperties uidCachedProperties) {
+    return new CachedUidGenerator(uidProperties, uidCachedProperties, workerIdAssigner);
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  @Lazy
+  CachedUidGenerator cachedUidGenerator(
+      UidProperties uidProperties,
+      UidCachedProperties uidCachedProperties,
+      RejectedTakeBufferHandler rejectedTakeBufferHandler,
+      RejectedPutBufferHandler rejectedPutBufferHandler) {
+    return new CachedUidGenerator(uidProperties,
+        uidCachedProperties,
+        workerIdAssigner,
+        rejectedPutBufferHandler,
+        rejectedTakeBufferHandler);
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  @Lazy
+  CachedUidGenerator cachedUidGenerator(
+      UidProperties uidProperties,
+      UidCachedProperties uidCachedProperties,
+      RejectedPutBufferHandler rejectedPutBufferHandler) {
+    return new CachedUidGenerator(
+        uidProperties,
+        uidCachedProperties,
+        workerIdAssigner,
+        rejectedPutBufferHandler);
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  @Lazy
+  CachedUidGenerator cachedUidGenerator(
+      UidProperties uidProperties,
+      UidCachedProperties uidCachedProperties,
+      RejectedTakeBufferHandler rejectedTakeBufferHandler) {
+    return new CachedUidGenerator(
+        uidProperties,
+        uidCachedProperties,
+        workerIdAssigner,
+        rejectedTakeBufferHandler);
+  }
+
+  /**
+   * example custom rejected handler
+   *
+   * @return RejectedPutBufferHandler
+   */
+//  @Bean
+//  RejectedPutBufferHandler customPutHandler() {
+//    return (r, i) -> {
+//        do your
+//    };
+//  }
 }

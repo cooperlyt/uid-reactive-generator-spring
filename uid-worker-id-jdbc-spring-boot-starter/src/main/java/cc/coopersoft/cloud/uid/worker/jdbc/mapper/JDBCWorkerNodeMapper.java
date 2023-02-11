@@ -32,7 +32,7 @@ import java.util.Optional;
  */
 
 @Repository
-public interface JdbcWorkerNodeMapper {
+public interface JDBCWorkerNodeMapper {
 
     /**
      * Get {@link WorkerNodeEntity} by node host

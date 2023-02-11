@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package cc.coopersoft.cloud.uid;
+package cc.coopersoft.cloud.uid.worker;
 
 import cc.coopersoft.cloud.uid.utils.DockerUtils;
 import cc.coopersoft.cloud.uid.utils.NetUtils;
-import cc.coopersoft.cloud.uid.worker.WorkerIdAssigner;
-import cc.coopersoft.cloud.uid.worker.dao.WorkerNodeDao;
 import cc.coopersoft.cloud.uid.worker.entity.WorkerNodeEntity;
 import cc.coopersoft.cloud.uid.worker.entity.WorkerNodeType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.math.RandomUtils;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Represents an implementation of {@link WorkerIdAssigner},
@@ -34,15 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 
 @Slf4j
-public class DisposableWorkerIdAssigner implements WorkerIdAssigner {
-
-    private final WorkerNodeDao workerNodeDAO;
-
-    public DisposableWorkerIdAssigner(WorkerNodeDao workerNodeDAO) {
-        this.workerNodeDAO = workerNodeDAO;
-    }
-
-
+public abstract class DisposableWorkerIdAssigner implements WorkerIdAssigner {
+    protected abstract long assignWorkerId(WorkerNodeEntity workerNodeEntity);
     /**
      * Assign worker id base on database.<p>
      * If there is host name & port in the environment, we considered that the node runs in Docker container<br>
@@ -50,22 +40,13 @@ public class DisposableWorkerIdAssigner implements WorkerIdAssigner {
      *
      * @return assigned worker id
      */
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public long assignWorkerId() {
-        // build worker node entity
-        WorkerNodeEntity workerNodeEntity = buildWorkerNode();
 
-        return workerNodeDAO
-            .getWorkerNodeByHostPort(workerNodeEntity.getHostName(), workerNodeEntity.getPort())
-            .map(WorkerNodeEntity::getId)
-            .orElseGet(() -> {
-                workerNodeDAO.addWorkerNode(workerNodeEntity);
-                return workerNodeEntity.getId();
-            });
+    public long assignWorkerId() {
+        log.info("request assign uid worker id by db");
+        // build worker node entity
+        return assignWorkerId(buildWorkerNode());
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public long assignFakeWorkerId() {
         return buildFakeWorkerNode().getId();

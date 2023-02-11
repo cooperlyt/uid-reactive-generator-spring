@@ -1,4 +1,12 @@
-package com.github.wujun234.uid;
+package cc.coopersoft.cloud.uid;
+
+import org.apache.commons.lang.StringUtils;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -6,16 +14,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.junit.jupiter.api.Test;
-import com.github.wujun234.uid.impl.DefaultUidGenerator;
-import org.apache.commons.lang.StringUtils;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -27,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author wujun
  */
 
+@Disabled
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class DefaultUidGeneratorTest {

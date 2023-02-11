@@ -17,12 +17,12 @@ package cc.coopersoft.cloud.uid.impl;
 
 import cc.coopersoft.cloud.uid.BitsAllocator;
 import cc.coopersoft.cloud.uid.UidGenerator;
+import cc.coopersoft.cloud.uid.UidProperties;
+import cc.coopersoft.cloud.uid.worker.WorkerIdAssigner;
 import cc.coopersoft.cloud.uid.exception.UidGenerateException;
 import cc.coopersoft.cloud.uid.utils.DateUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -57,10 +57,18 @@ import java.util.concurrent.TimeUnit;
  * @author yutianbao
  * @author wujun
  */
-public class DefaultUidGenerator implements UidGenerator, InitializingBean {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultUidGenerator.class);
 
-    protected UidProperties uidProperties;
+@Slf4j
+public class DefaultUidGenerator implements UidGenerator, InitializingBean {
+
+    public DefaultUidGenerator(UidProperties uidProperties, WorkerIdAssigner workerIdAssigner) {
+        this.uidProperties = uidProperties;
+        this.workerIdAssigner = workerIdAssigner;
+    }
+
+    protected final UidProperties uidProperties;
+
+    private final WorkerIdAssigner workerIdAssigner;
 
     /**
      * Bit分配器,Stable fields after spring bean initializing
@@ -74,14 +82,6 @@ public class DefaultUidGenerator implements UidGenerator, InitializingBean {
     protected long sequence = 0L;
     protected long lastSecond = -1L;
 
-    /**
-     * Spring property
-     */
-    protected WorkerIdAssigner workerIdAssigner;
-
-    public DefaultUidGenerator(UidProperties uidProperties) {
-        this.uidProperties = uidProperties;
-    }
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -91,12 +91,12 @@ public class DefaultUidGenerator implements UidGenerator, InitializingBean {
         // initialize worker id
         workerId = workerIdAssigner.assignWorkerId();
         if (workerId > bitsAllocator.getMaxWorkerId()) {
-            LOGGER.error("Worker id " + workerId + " exceeds the max " + bitsAllocator.getMaxWorkerId());
+            log.error("Worker id " + workerId + " exceeds the max " + bitsAllocator.getMaxWorkerId());
             workerId = workerId % bitsAllocator.getMaxWorkerId();
-            LOGGER.info("new Worker id = " + workerId);
+            log.info("new Worker id = " + workerId);
         }
 
-        LOGGER.info("Initialized bits(1, {}, {}, {}) for workerID:{}", uidProperties.getTimeBits(), uidProperties.getWorkerBits(), uidProperties.getSeqBits(), workerId);
+        log.info("Initialized bits(1, {}, {}, {}) for workerID:{}", uidProperties.getTimeBits(), uidProperties.getWorkerBits(), uidProperties.getSeqBits(), workerId);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class DefaultUidGenerator implements UidGenerator, InitializingBean {
         try {
             return nextId();
         } catch (Exception e) {
-            LOGGER.error("Generate unique id exception. ", e);
+            log.error("Generate unique id exception. ", e);
             throw new UidGenerateException(e);
         }
     }
@@ -142,17 +142,17 @@ public class DefaultUidGenerator implements UidGenerator, InitializingBean {
             long refusedSeconds = lastSecond - currentSecond;
             if (uidProperties.isEnableBackward()) {
                 if (refusedSeconds <= uidProperties.getMaxBackwardSeconds()) {
-                    LOGGER.error("Clock moved backwards. wait for %d seconds", refusedSeconds);
+                    log.error("Clock moved backwards. wait for %d seconds", refusedSeconds);
                     while (currentSecond < lastSecond) {
                         currentSecond = getCurrentSecond();
                     }
                 } else {
                     workerId = workerIdAssigner.assignFakeWorkerId();
-                    LOGGER.error("Clock moved backwards. Assigned New WorkerId %d", workerId);
+                    log.error("Clock moved backwards. Assigned New WorkerId %d", workerId);
                     if (workerId > bitsAllocator.getMaxWorkerId()) {
-                        LOGGER.error("Worker id " + workerId + " exceeds the max " + bitsAllocator.getMaxWorkerId());
+                        log.error("Worker id " + workerId + " exceeds the max " + bitsAllocator.getMaxWorkerId());
                         workerId = workerId % bitsAllocator.getMaxWorkerId();
-                        LOGGER.info("new Worker id = " + workerId);
+                        log.info("new Worker id = " + workerId);
                     }
                 }
             } else {
@@ -201,12 +201,5 @@ public class DefaultUidGenerator implements UidGenerator, InitializingBean {
         }
 
         return currentSecond;
-    }
-
-    /**
-     * Setters for spring property
-     */
-    public void setWorkerIdAssigner(WorkerIdAssigner workerIdAssigner) {
-        this.workerIdAssigner = workerIdAssigner;
     }
 }

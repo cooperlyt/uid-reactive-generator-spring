@@ -66,7 +66,7 @@ public abstract class DateUtils extends org.apache.commons.lang.time.DateUtils {
      */
     public static Date parseDate(String str, String pattern) {
         try {
-            return parseDate(str, new String[]{pattern});
+            return DateUtils.parseDate(str, new String[]{pattern});
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
