@@ -17,6 +17,7 @@ package io.github.cooperlyt.cloud.uid;
 
 
 import io.github.cooperlyt.cloud.uid.exception.UidGenerateException;
+import reactor.core.publisher.Mono;
 
 /**
  * Represents a unique id generator.
@@ -31,7 +32,7 @@ public interface UidGenerator {
      * @return UID
      * @throws UidGenerateException
      */
-    long getUID() throws UidGenerateException;
+    Mono<Long> getUID() throws UidGenerateException;
 
     /**
      * Parse the UID into elements which are used to generate the UID. <br>

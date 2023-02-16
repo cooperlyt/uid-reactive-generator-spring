@@ -18,12 +18,10 @@ package io.github.cooperlyt.cloud.uid.buffer;
 import io.github.cooperlyt.cloud.uid.utils.NamingThreadFactory;
 import io.github.cooperlyt.cloud.uid.utils.PaddedAtomicLong;
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -57,6 +55,8 @@ public class BufferPaddingExecutor {
     
     /** Schedule interval Unit as seconds */
     private long scheduleInterval = DEFAULT_SCHEDULE_INTERVAL;
+
+    private TimeIsFutureHandler timeIsFutureHandler = this::allowTimeToFuture;
 
     /**
      * Constructor with {@link RingBuffer} and {@link BufferedUidProvider}, default use schedule
@@ -98,7 +98,7 @@ public class BufferPaddingExecutor {
      */
     public void start() {
         if (bufferPadSchedule != null) {
-            bufferPadSchedule.scheduleWithFixedDelay(() -> paddingBuffer(), scheduleInterval, scheduleInterval, TimeUnit.SECONDS);
+            bufferPadSchedule.scheduleWithFixedDelay(this::asyncPadding, scheduleInterval, scheduleInterval, TimeUnit.SECONDS);
         }
     }
 
@@ -124,11 +124,21 @@ public class BufferPaddingExecutor {
         return running.get();
     }
 
+
+    private Mono<Void> paddingFuture = Mono.empty();
+
+    public Mono<Void> getPaddingFuture() {
+        return paddingFuture;
+    }
+
     /**
      * Padding buffer in the thread pool
      */
     public void asyncPadding() {
-        bufferPadExecutors.submit(this::paddingBuffer);
+//        Mono.fromFuture(CompletableFuture.runAsync(this::paddingBuffer,bufferPadExecutors)).
+        paddingFuture = Mono.fromFuture(CompletableFuture.runAsync(this::paddingBuffer,bufferPadExecutors)).cache();
+//        t.isDone()
+//        bufferPadExecutors.submit(this::paddingBuffer).;
     }
 
     /**
@@ -147,7 +157,12 @@ public class BufferPaddingExecutor {
         // fill the rest slots until to catch the cursor
         boolean isFullRingBuffer = false;
         while (!isFullRingBuffer) {
-            List<Long> uidList = uidProvider.provide(lastSecond.incrementAndGet());
+            long providerTime = lastSecond.incrementAndGet();
+            long currentTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+            if (providerTime > currentTime){
+                timeIsFutureHandler.timeIsFuture(providerTime,currentTime);
+            }
+            List<Long> uidList = uidProvider.provide(providerTime);
             for (Long uid : uidList) {
                 isFullRingBuffer = !ringBuffer.put(uid);
                 if (isFullRingBuffer) {
@@ -162,11 +177,24 @@ public class BufferPaddingExecutor {
     }
 
     /**
+     * Policy for {@link TimeIsFutureHandler}, we just do logging
+     */
+    protected void allowTimeToFuture(long idTime, long currentTime) {
+        log.warn("Rejected take buffer. id time: {} MILLISECONDS, currentTime: {} MILLISECONDS", idTime, currentTime);
+    }
+
+    /**
      * Setters
      */
     public void setScheduleInterval(long scheduleInterval) {
         assert scheduleInterval > 0 : "Schedule interval must positive!";
         this.scheduleInterval = scheduleInterval;
     }
+
+    public void setTimeToFutureHandler(TimeIsFutureHandler timeIsFutureHandler){
+        this.timeIsFutureHandler = timeIsFutureHandler;
+    }
+
+
     
 }

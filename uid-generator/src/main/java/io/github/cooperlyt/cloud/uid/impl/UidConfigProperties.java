@@ -42,47 +42,62 @@ public class UidConfigProperties implements UidProperties {
     private long epochSeconds = TimeUnit.MILLISECONDS.toSeconds(1550592000000L);
 
     /**
-     * 是否容忍时钟回拨, 默认:true
-     */
-    private boolean enableBackward = true;
-
-    /**
      * 时钟回拨最长容忍时间（秒）
      */
     private long maxBackwardSeconds = 1L;
 
+    /**
+     * 是否允许使用未来时间
+     */
+    private boolean enableFutureTime = false;
+
+    @Override
+    public boolean isEnableFutureTime() {
+        return enableFutureTime;
+    }
+
+    @Override
+    public void setEnableFutureTime(boolean enableFutureTime) {
+        this.enableFutureTime = enableFutureTime;
+    }
+
+    @Override
     public int getTimeBits() {
         return timeBits;
     }
 
+    @Override
     public void setTimeBits(int timeBits) {
         if (timeBits > 0) {
             this.timeBits = timeBits;
         }
     }
 
+    @Override
     public int getWorkerBits() {
         return workerBits;
     }
 
+    @Override
     public void setWorkerBits(int workerBits) {
         if (workerBits > 0) {
             this.workerBits = workerBits;
         }
     }
 
+    @Override
     public int getSeqBits() {
         return seqBits;
     }
 
+    @Override
     public void setSeqBits(int seqBits) {
         if (seqBits > 0) {
             this.seqBits = seqBits;
         }
     }
 
-
-
+    @Override
     public void setEpochStr(String epochStr) {
         if (StringUtils.isNotBlank(epochStr)) {
             this.epochStr = epochStr;
@@ -90,22 +105,17 @@ public class UidConfigProperties implements UidProperties {
         }
     }
 
+    @Override
     public long getEpochSeconds() {
         return epochSeconds;
     }
 
-    public boolean isEnableBackward() {
-        return enableBackward;
-    }
-
-    public void setEnableBackward(boolean enableBackward) {
-        this.enableBackward = enableBackward;
-    }
-
+    @Override
     public long getMaxBackwardSeconds() {
         return maxBackwardSeconds;
     }
 
+    @Override
     public void setMaxBackwardSeconds(long maxBackwardSeconds) {
         this.maxBackwardSeconds = maxBackwardSeconds;
     }

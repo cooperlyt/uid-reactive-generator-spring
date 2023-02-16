@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.github.cooperlyt</groupId>
         <artifactId>uid-generator-spring-boot</artifactId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.0.5-SNAPSHOT</version>
     </parent>
 
     <artifactId>uid-generator-spring-boot-starter</artifactId>
@@ -27,40 +27,51 @@
         <dependency>
             <groupId>io.github.cooperlyt</groupId>
             <artifactId>uid-generator</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.0.5-SNAPSHOT</version>
         </dependency>
 
 
         <!-- test by jdbc and mariadb -->
 
-<!--        <dependency>-->
-<!--            <groupId>cooperlyt.github.io</groupId>-->
-<!--            <artifactId>uid-worker-id-jdbc-spring-boot-starter</artifactId>-->
-<!--            <version>1.0.1.BATE</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>org.mariadb.jdbc</groupId>-->
-<!--            <artifactId>mariadb-java-client</artifactId>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-
-        <!-- test by r2dbc and mariadb -->
         <dependency>
             <groupId>io.github.cooperlyt</groupId>
-            <artifactId>uid-worker-id-r2dbc-spring-boot-starter</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
-            <scope>test</scope>
+            <artifactId>uid-worker-mybatis-jdbc-spring-boot-starter</artifactId>
+            <version>1.0.5-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
-
 
         <dependency>
-            <groupId>org.mariadb</groupId>
-            <artifactId>r2dbc-mariadb</artifactId>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
             <scope>test</scope>
-            <version>1.1.3</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- test by r2dbc and mariadb -->
+<!--        <dependency>-->
+<!--            <groupId>io.github.cooperlyt</groupId>-->
+<!--            <artifactId>uid-worker-mybatis-r2dbc-spring-boot-starter</artifactId>-->
+<!--            <version>1.0.5-SNAPSHOT</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>io.github.cooperlyt</groupId>-->
+<!--            <artifactId>uid-worker-jap-jdbc-spring-boot-starter</artifactId>-->
+<!--            <version>1.0.5-SNAPSHOT</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>org.mariadb</groupId>-->
+<!--            <artifactId>r2dbc-mariadb</artifactId>-->
+<!--            <scope>test</scope>-->
+<!--            <version>1.1.3</version>-->
+<!--        </dependency>-->
 
     </dependencies>
 

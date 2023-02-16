@@ -17,6 +17,7 @@ package io.github.cooperlyt.cloud.uid.buffer;
 
 import io.github.cooperlyt.cloud.uid.utils.PaddedAtomicLong;
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Mono;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -59,7 +60,7 @@ public class RingBuffer {
     
     /** Reject put/take buffer handle policy */
     private RejectedPutBufferHandler rejectedPutHandler = this::discardPutBuffer;
-    private RejectedTakeBufferHandler rejectedTakeHandler = this::exceptionRejectedTakeBuffer; 
+
     
     /** Executor of padding buffer */
     private BufferPaddingExecutor bufferPaddingExecutor;
@@ -141,12 +142,12 @@ public class RingBuffer {
      * 
      * Before getting the UID, we also check whether reach the padding threshold, 
      * the padding buffer operation will be triggered in another thread<br>
-     * If there is no more available UID to be taken, the specified {@link RejectedTakeBufferHandler} will be applied<br>
+     *
      * 
      * @return UID
      * @throws IllegalStateException if the cursor moved back
      */
-    public long take() {
+    public Mono<Long> take() {
         // spin get next available cursor
         long currentCursor = cursor.get();
         long nextCursor = cursor.updateAndGet(old -> old == tail.get() ? old : old + 1);
@@ -165,7 +166,9 @@ public class RingBuffer {
 
         // cursor catch the tail, means that there is no more available UID to take
         if (nextCursor == currentCursor) {
-            rejectedTakeHandler.rejectTakeBuffer(this);
+            log.info("Buffer empty waiting put");
+            return bufferPaddingExecutor.getPaddingFuture().map(v -> -1L).switchIfEmpty(take());
+            //rejectedTakeHandler.rejectTakeBuffer(this);
         }
 
         // 1. check next slot flag is CAN_TAKE_FLAG
@@ -180,7 +183,7 @@ public class RingBuffer {
 
         // Note that: Step 2,3 can not swap. If we set flag before get value of slot, the producer may overwrite the
         // slot with a new UID, and this may cause the consumer take the UID twice after walk a round the ring
-        return uid;
+        return Mono.just(uid);
     }
 
     /**
@@ -197,13 +200,7 @@ public class RingBuffer {
         log.warn("Rejected putting buffer for uid:{}. {}", uid, ringBuffer);
     }
     
-    /**
-     * Policy for {@link RejectedTakeBufferHandler}, throws {@link RuntimeException} after logging 
-     */
-    protected void exceptionRejectedTakeBuffer(RingBuffer ringBuffer) {
-        log.warn("Rejected take buffer. {}", ringBuffer);
-        throw new RuntimeException("Rejected take buffer. " + ringBuffer);
-    }
+
     
     /**
      * Initialize flags as CAN_PUT_FLAG
@@ -241,10 +238,6 @@ public class RingBuffer {
 
     public void setRejectedPutHandler(RejectedPutBufferHandler rejectedPutHandler) {
         this.rejectedPutHandler = rejectedPutHandler;
-    }
-
-    public void setRejectedTakeHandler(RejectedTakeBufferHandler rejectedTakeHandler) {
-        this.rejectedTakeHandler = rejectedTakeHandler;
     }
 
     @Override

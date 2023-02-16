@@ -1,14 +1,12 @@
 package io.github.cooperlyt.cloud.uid;
 
 import io.github.cooperlyt.cloud.uid.buffer.RejectedPutBufferHandler;
-import io.github.cooperlyt.cloud.uid.buffer.RejectedTakeBufferHandler;
+import io.github.cooperlyt.cloud.uid.buffer.TimeIsFutureHandler;
 import io.github.cooperlyt.cloud.uid.impl.CachedUidGenerator;
 import io.github.cooperlyt.cloud.uid.impl.DefaultUidGenerator;
 import io.github.cooperlyt.cloud.uid.impl.UidCachedConfigProperties;
 import io.github.cooperlyt.cloud.uid.impl.UidConfigProperties;
-import io.github.cooperlyt.cloud.uid.UidCachedProperties;
-import io.github.cooperlyt.cloud.uid.UidProperties;
-import io.github.cooperlyt.cloud.uid.exception.worker.WorkerIdAssigner;
+import io.github.cooperlyt.cloud.uid.worker.WorkerIdAssigner;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -74,13 +72,13 @@ public class UidAutoConfigure {
   CachedUidGenerator cachedUidGenerator(
       UidProperties uidProperties,
       UidCachedProperties uidCachedProperties,
-      RejectedTakeBufferHandler rejectedTakeBufferHandler,
+      TimeIsFutureHandler timeIsFutureHandler,
       RejectedPutBufferHandler rejectedPutBufferHandler) {
     return new CachedUidGenerator(uidProperties,
         uidCachedProperties,
         workerIdAssigner,
         rejectedPutBufferHandler,
-        rejectedTakeBufferHandler);
+        timeIsFutureHandler);
   }
 
   @Bean
@@ -103,12 +101,12 @@ public class UidAutoConfigure {
   CachedUidGenerator cachedUidGenerator(
       UidProperties uidProperties,
       UidCachedProperties uidCachedProperties,
-      RejectedTakeBufferHandler rejectedTakeBufferHandler) {
+      TimeIsFutureHandler timeIsFutureHandler) {
     return new CachedUidGenerator(
         uidProperties,
         uidCachedProperties,
         workerIdAssigner,
-        rejectedTakeBufferHandler);
+        timeIsFutureHandler);
   }
 
   /**

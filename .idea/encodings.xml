@@ -13,10 +13,14 @@
     <file url="file://$PROJECT_DIR$/uid-generator/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/uid-worker-id-db-provider/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/uid-worker-id-db-provider/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/uid-worker-id-jdbc-spring-boot-starter/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/uid-worker-id-jdbc-spring-boot-starter/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/uid-worker-id-r2dbc-spring-boot-starter/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/uid-worker-id-r2dbc-spring-boot-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/uid-worker-jap-jdbc-spring-boot-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/uid-worker-jap-jdbc-spring-boot-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/uid-worker-jpa-r2dbc-spring-boot-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/uid-worker-jpa-r2dbc-spring-boot-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/uid-worker-mybatis-jdbc-spring-boot-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/uid-worker-mybatis-jdbc-spring-boot-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/uid-worker-mybatis-r2dbc-spring-boot-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/uid-worker-mybatis-r2dbc-spring-boot-starter/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/uid-worker-node-id-provider/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/uid-worker-node-id-provider/src/main/resources" charset="UTF-8" />
   </component>

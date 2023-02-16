@@ -1,5 +1,7 @@
 package io.github.cooperlyt.cloud.uid;
 
+import io.github.cooperlyt.cloud.uid.impl.CachedUidGenerator;
+import io.github.cooperlyt.cloud.uid.impl.DefaultUidGenerator;
 import org.apache.commons.lang.StringUtils;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -7,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class CachedUidGeneratorTest {
-    private static final int SIZE = 700; //7000000 700w
+    private static final int SIZE = 7000000; //7000000 700w
     private static final boolean VERBOSE = false;
     private static final int THREADS = Runtime.getRuntime().availableProcessors() << 1;
 
@@ -43,6 +46,7 @@ public class CachedUidGeneratorTest {
      * @throws IOException
      */
     @Test
+    @Transactional
     public void testSerialGenerate() throws IOException {
         // Generate UID serially
         Set<Long> uidSet = new HashSet<>(SIZE);
@@ -105,7 +109,7 @@ public class CachedUidGeneratorTest {
      * Do generating
      */
     private void doGenerate(Set<Long> uidSet, int index) {
-        long uid = cachedUidGenerator.getUID();
+        long uid = cachedUidGenerator.getUID().block() ;
         String parsedInfo = cachedUidGenerator.parseUID(uid);
         System.out.println("gen id:  " + parsedInfo);
         boolean existed = !uidSet.add(uid);

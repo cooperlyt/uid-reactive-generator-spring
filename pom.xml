@@ -6,7 +6,7 @@
 
     <groupId>io.github.cooperlyt</groupId>
     <artifactId>uid-generator-spring-boot</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.5-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>uid-generator-spring-boot</name>
@@ -43,11 +43,12 @@
 
     <modules>
         <module>uid-generator</module>
-        <module>uid-worker-id-jdbc-spring-boot-starter</module>
+        <module>uid-worker-mybatis-jdbc-spring-boot-starter</module>
         <module>uid-generator-api</module>
-        <module>uid-worker-id-db-provider</module>
         <module>uid-generator-spring-boot-starter</module>
-        <module>uid-worker-id-r2dbc-spring-boot-starter</module>
+        <module>uid-worker-mybatis-r2dbc-spring-boot-starter</module>
+        <module>uid-worker-jpa-r2dbc-spring-boot-starter</module>
+        <module>uid-worker-jap-jdbc-spring-boot-starter</module>
     </modules>
 
     <properties>

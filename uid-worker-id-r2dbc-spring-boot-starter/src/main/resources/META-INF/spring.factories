@@ -1,1 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=io.github.cooperlyt.cloud.uid.worker.r2dbc.R2DBCWorkerIdAssigner

@@ -30,6 +30,7 @@ public class UidCachedConfigProperties implements UidCachedProperties {
    */
   private Long scheduleInterval;
 
+
   @Override
   public int getBoostPower() {
     return boostPower;
@@ -45,16 +46,19 @@ public class UidCachedConfigProperties implements UidCachedProperties {
     return scheduleInterval;
   }
 
+  @Override
   public void setBoostPower(int boostPower) {
     Assert.isTrue(boostPower > 0, "Boost power must be positive!");
     this.boostPower = boostPower;
   }
 
+  @Override
   public void setPaddingFactor(int paddingFactor) {
     Assert.isTrue(paddingFactor > 0 && paddingFactor < 100, "padding factor must be in (0, 100)!");
     this.paddingFactor = paddingFactor;
   }
 
+  @Override
   public void setScheduleInterval(long scheduleInterval) {
     Assert.isTrue(scheduleInterval > 0, "Schedule interval must positive!");
     this.scheduleInterval = scheduleInterval;

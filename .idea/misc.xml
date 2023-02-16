@@ -10,6 +10,7 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/r2dbc-test/pom.xml" />
+        <option value="$PROJECT_DIR$/uid-worker-id-db-provider/pom.xml" />
         <option value="$PROJECT_DIR$/uid-worker-node-id-provider/pom.xml" />
       </set>
     </option>

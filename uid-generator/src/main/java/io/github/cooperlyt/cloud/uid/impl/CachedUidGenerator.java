@@ -18,10 +18,11 @@ package io.github.cooperlyt.cloud.uid.impl;
 import io.github.cooperlyt.cloud.uid.UidCachedProperties;
 import io.github.cooperlyt.cloud.uid.UidProperties;
 import io.github.cooperlyt.cloud.uid.buffer.*;
-import io.github.cooperlyt.cloud.uid.exception.worker.WorkerIdAssigner;
+import io.github.cooperlyt.cloud.uid.worker.WorkerIdAssigner;
 import io.github.cooperlyt.cloud.uid.exception.UidGenerateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +60,7 @@ public class CachedUidGenerator extends DefaultUidGenerator implements Disposabl
 
     /** 拒绝策略: 当环已空, 无法继续获取时
      默认无需指定, 将记录日志, 并抛出UidGenerateException异常. 如有特殊需求, 请实现RejectedTakeBufferHandler接口(支持Lambda表达式)并以@Autowired方式注入 */
-    private final RejectedTakeBufferHandler rejectedTakeBufferHandler;
+    private final TimeIsFutureHandler timeIsFutureHandler;
 
     private final UidCachedProperties uidCachedProperties;
 
@@ -68,11 +69,11 @@ public class CachedUidGenerator extends DefaultUidGenerator implements Disposabl
         UidCachedProperties uidCachedProperties,
         WorkerIdAssigner workerIdAssigner,
         RejectedPutBufferHandler rejectedPutBufferHandler,
-        RejectedTakeBufferHandler rejectedTakeBufferHandler
+        TimeIsFutureHandler timeIsFutureHandler
     ) {
         super(uidProperties, workerIdAssigner);
         this.uidCachedProperties = uidCachedProperties;
-        this.rejectedTakeBufferHandler = rejectedTakeBufferHandler;
+        this.timeIsFutureHandler = timeIsFutureHandler;
         this.rejectedPutBufferHandler = rejectedPutBufferHandler;
     }
 
@@ -80,11 +81,11 @@ public class CachedUidGenerator extends DefaultUidGenerator implements Disposabl
         UidProperties uidProperties,
         UidCachedProperties uidCachedProperties,
         WorkerIdAssigner workerIdAssigner,
-        RejectedTakeBufferHandler rejectedTakeBufferHandler
+        TimeIsFutureHandler timeIsFutureHandler
     ) {
         super(uidProperties, workerIdAssigner);
         this.uidCachedProperties = uidCachedProperties;
-        this.rejectedTakeBufferHandler = rejectedTakeBufferHandler;
+        this.timeIsFutureHandler = timeIsFutureHandler;
         this.rejectedPutBufferHandler = null;
     }
 
@@ -97,7 +98,7 @@ public class CachedUidGenerator extends DefaultUidGenerator implements Disposabl
         super(uidProperties, workerIdAssigner);
         this.uidCachedProperties = uidCachedProperties;
         this.rejectedPutBufferHandler = rejectedPutBufferHandler;
-        this.rejectedTakeBufferHandler = null;
+        this.timeIsFutureHandler = null;
     }
 
     public CachedUidGenerator(
@@ -107,7 +108,7 @@ public class CachedUidGenerator extends DefaultUidGenerator implements Disposabl
     ) {
         super(uidProperties, workerIdAssigner);
         this.uidCachedProperties = uidCachedProperties;
-        this.rejectedTakeBufferHandler = null;
+        this.timeIsFutureHandler = null;
         this.rejectedPutBufferHandler = null;
     }
 
@@ -122,7 +123,7 @@ public class CachedUidGenerator extends DefaultUidGenerator implements Disposabl
     }
 
     @Override
-    public long getUID() {
+    public Mono<Long> getUID() {
         try {
             return ringBuffer.take();
         } catch (Exception e) {
@@ -139,6 +140,7 @@ public class CachedUidGenerator extends DefaultUidGenerator implements Disposabl
     @Override
     public void destroy() throws Exception {
         bufferPaddingExecutor.shutdown();
+        super.destroy();
     }
 
     /**
@@ -148,17 +150,20 @@ public class CachedUidGenerator extends DefaultUidGenerator implements Disposabl
      * @return UID list, size of {@link BitsAllocator#getMaxSequence()} + 1
      */
     protected List<Long> nextIdsForOneSecond(long currentSecond) {
-        // Initialize result list size of (max sequence + 1)
-        int listSize = (int) bitsAllocator.getMaxSequence() + 1;
-        List<Long> uidList = new ArrayList<>(listSize);
+        return workerId.blockOptional()
+            .map(workerId -> {
+                // Initialize result list size of (max sequence + 1)
+                int listSize = (int) bitsAllocator.getMaxSequence() + 1;
+                List<Long> uidList = new ArrayList<>(listSize);
 
-        // Allocate the first sequence of the second, the others can be calculated with the offset
-        long firstSeqUid = bitsAllocator.allocate(currentSecond - uidProperties.getEpochSeconds(), workerId, 0L);
-        for (int offset = 0; offset < listSize; offset++) {
-            uidList.add(firstSeqUid + offset);
-        }
+                // Allocate the first sequence of the second, the others can be calculated with the offset
+                long firstSeqUid = bitsAllocator.allocate(currentSecond - uidProperties.getEpochSeconds(), workerId, 0L);
+                for (int offset = 0; offset < listSize; offset++) {
+                    uidList.add(firstSeqUid + offset);
+                }
 
-        return uidList;
+                return uidList;
+            }).orElseThrow(() -> new IllegalStateException("can`t get worker id."));
     }
 
 
@@ -177,6 +182,9 @@ public class CachedUidGenerator extends DefaultUidGenerator implements Disposabl
         if (usingSchedule) {
             bufferPaddingExecutor.setScheduleInterval(uidCachedProperties.getScheduleInterval());
         }
+        if (timeIsFutureHandler != null){
+            bufferPaddingExecutor.setTimeToFutureHandler(timeIsFutureHandler);
+        }
 
         log.info("Initialized BufferPaddingExecutor. Using schdule:{}, interval:{}", usingSchedule, uidCachedProperties.getScheduleInterval());
 
@@ -186,9 +194,7 @@ public class CachedUidGenerator extends DefaultUidGenerator implements Disposabl
         if (rejectedPutBufferHandler != null){
             this.ringBuffer.setRejectedPutHandler(rejectedPutBufferHandler);
         }
-        if (rejectedTakeBufferHandler != null){
-            this.ringBuffer.setRejectedTakeHandler(rejectedTakeBufferHandler);
-        }
+
 
         // fill in all slots of the RingBuffer
         bufferPaddingExecutor.paddingBuffer();

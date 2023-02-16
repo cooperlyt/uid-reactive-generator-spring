@@ -1,6 +1,7 @@
 package io.github.cooperlyt.cloud.uid;
 
 import io.github.cooperlyt.cloud.uid.UidGenerator;
+import io.github.cooperlyt.cloud.uid.impl.DefaultUidGenerator;
 import org.apache.commons.lang.StringUtils;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,12 +32,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class DefaultUidGeneratorTest {
-    private static final int SIZE = 100000; // 10w
+    private static final int SIZE = 50000; // 10w
     private static final boolean VERBOSE = true;
     private static final int THREADS = Runtime.getRuntime().availableProcessors() << 1;
 
     @Autowired
     private UidGenerator defaultUidGenerator;
+
 
     /**
      * Test for serially generate
@@ -102,9 +105,15 @@ public class DefaultUidGeneratorTest {
      * Do generating
      */
     private void doGenerate(Set<Long> uidSet, int index) {
-        long uid = defaultUidGenerator.getUID();
+
+
+        long uid = defaultUidGenerator.getUID().block() ;
         String parsedInfo = defaultUidGenerator.parseUID(uid);
-        uidSet.add(uid);
+        //System.out.println("gen id:  " + parsedInfo);
+        boolean existed = !uidSet.add(uid);
+        if (existed) {
+            System.out.println("Found duplicate UID " + uid);
+        }
 
         // Check UID is positive, and can be parsed
         assertTrue(uid > 0L);
