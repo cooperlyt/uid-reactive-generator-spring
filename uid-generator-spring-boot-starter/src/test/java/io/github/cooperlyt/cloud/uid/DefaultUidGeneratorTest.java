@@ -1,6 +1,5 @@
 package io.github.cooperlyt.cloud.uid;
 
-import io.github.cooperlyt.cloud.uid.UidGenerator;
 import io.github.cooperlyt.cloud.uid.impl.DefaultUidGenerator;
 import org.apache.commons.lang.StringUtils;
 import org.junit.jupiter.api.Disabled;
@@ -16,7 +15,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

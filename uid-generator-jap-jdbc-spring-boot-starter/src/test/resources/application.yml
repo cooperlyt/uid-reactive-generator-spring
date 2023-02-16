@@ -1,38 +1,13 @@
 
-mybatis:
-  configuration:
-    default-fetch-size: 100
-    default-statement-timeout: 30
-    map-underscore-to-camel-case: true
-
-r2dbc:
-  mybatis:
-    mapper-locations: classpath:mapper/*.xml
-    map-underscore-to-camel-case: true
-
 spring:
-  jpa:
-    show-sql: true
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://127.0.0.1:3306/corp?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&allowMultiQueries=true
     username: root
     password: 5257mq
-
-
-  r2dbc:
-    mybatis:
-      r2dbc-url: r2dbc:mariadb://127.0.0.1:3306/corp?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
-      username: root
-      password: 5257mq
-      pool:
-        max-idle-time: PT3M
-        validation-query: SELECT 1 FROM DUAL
-        initial-size: 1
-        max-size: 3
-        acquire-retry: 3
-        validation-depth: REMOTE
-        max-create-connection-time: PT30S
+  jpa:
+    show-sql: true
+    database: mysql
 
 
 # 以下为可选配置, 如未指定将采用默认值

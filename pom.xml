@@ -43,12 +43,12 @@
 
     <modules>
         <module>uid-generator</module>
-        <module>uid-worker-mybatis-jdbc-spring-boot-starter</module>
+        <module>uid-generator-mybatis-jdbc-spring-boot-starter</module>
         <module>uid-generator-api</module>
         <module>uid-generator-spring-boot-starter</module>
-        <module>uid-worker-mybatis-r2dbc-spring-boot-starter</module>
-        <module>uid-worker-jpa-r2dbc-spring-boot-starter</module>
-        <module>uid-worker-jap-jdbc-spring-boot-starter</module>
+        <module>uid-generator-mybatis-r2dbc-spring-boot-starter</module>
+        <module>uid-generator-jpa-r2dbc-spring-boot-starter</module>
+        <module>uid-generator-jap-jdbc-spring-boot-starter</module>
     </modules>
 
     <properties>

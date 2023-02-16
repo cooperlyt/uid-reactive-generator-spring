@@ -1,7 +1,6 @@
 package io.github.cooperlyt.cloud.uid;
 
 import io.github.cooperlyt.cloud.uid.impl.CachedUidGenerator;
-import io.github.cooperlyt.cloud.uid.impl.DefaultUidGenerator;
 import org.apache.commons.lang.StringUtils;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -9,7 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,7 +44,6 @@ public class CachedUidGeneratorTest {
      * @throws IOException
      */
     @Test
-    @Transactional
     public void testSerialGenerate() throws IOException {
         // Generate UID serially
         Set<Long> uidSet = new HashSet<>(SIZE);
