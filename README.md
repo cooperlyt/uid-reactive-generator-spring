@@ -171,7 +171,7 @@ uid:
   epochStr: "2023-02-17"   # Initial time, default:"2019-02-20"
   enableFutureTime: false  # all use future time , how long is `maxBackwardSeconds` ， default: false
   maxBackwardSeconds: 1    # The maximum tolerance time for system clock callback and use of future time (seconds), default:1
-  CachedUidGenerator:     # CachedUidGenerator相关参数
+  CachedUidGenerator:     # CachedUidGenerator configures
     boostPower: 3          # RingBuffer size, default:3
     paddingFactor: 50      # Specifies when to fill the UID into the RingBuffer, the value is a percentage (0, 100), the default is 50
     #scheduleInterval: 60    # Default: Do not configure this item, that is, do not use the Schedule thread to fill the buffer ring regularly. If you want to use it, please specify the Schedule thread time interval, unit: second
