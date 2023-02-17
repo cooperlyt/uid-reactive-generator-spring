@@ -6,7 +6,7 @@ uid-generator-spring-boot-starter
 
 UidGenerator is a Java implemented, [Snowflake](https://github.com/twitter/snowflake) based reactive unique ID generator。
 
-Based on [Snowflake](https://github.com/twitter/snowflake)，[百度UidGenerator](https://github.com/baidu/uid-generator)，[uid-generator-spring-boot-starter](https://github.com/wujun234/uid-generator-spring-boot-starter)
+Based on [Snowflake](https://github.com/twitter/snowflake)，[UidGenerator](https://github.com/baidu/uid-generator)，[uid-generator-spring-boot-starter](https://github.com/wujun234/uid-generator-spring-boot-starter)
 
 
 * Change packages，Extract Worker node id API.
@@ -170,11 +170,11 @@ uid:
   seqBits: 7               # sequence bits, default:7
   epochStr: "2023-02-17"   # Initial time, default:"2019-02-20"
   enableFutureTime: false  # all use future time , how long is `maxBackwardSeconds` ， default: false
-  maxBackwardSeconds: 1    # 系统时钟回拨和使用未来时间最长容忍时间（秒）, 默认:1
+  maxBackwardSeconds: 1    # The maximum tolerance time for system clock callback and use of future time (seconds), default:1
   CachedUidGenerator:     # CachedUidGenerator相关参数
-    boostPower: 3          # RingBuffer size扩容参数, 可提高UID生成的吞吐量, 默认:3
-    paddingFactor: 50      # 指定何时向RingBuffer中填充UID, 取值为百分比(0, 100), 默认为50
-    #scheduleInterval: 60    # 默认:不配置此项, 即不使用Schedule线程定时填充buffer环. 如需使用, 请指定Schedule线程时间间隔, 单位:秒
+    boostPower: 3          # RingBuffer size, default:3
+    paddingFactor: 50      # Specifies when to fill the UID into the RingBuffer, the value is a percentage (0, 100), the default is 50
+    #scheduleInterval: 60    # Default: Do not configure this item, that is, do not use the Schedule thread to fill the buffer ring regularly. If you want to use it, please specify the Schedule thread time interval, unit: second
 ```
 
 ### Code
