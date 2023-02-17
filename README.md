@@ -78,7 +78,6 @@ Current version is:1.0.5
 </dependency>
 
 ```
-About mybatis r2dbc, refer [reactive-mybatis-support](https://github.com/chenggangpro/reactive-mybatis-support)
 
 
 ### Databases（optional）
@@ -100,7 +99,7 @@ PRIMARY KEY(ID)
 
 ### spring boot configure
 
-#### jdbc(mariadb)
+#### mybatis jdbc(mariadb)
 
 ```yml
 mybatis:
@@ -116,8 +115,8 @@ spring:
     password: ****
 ```
 
-#### r2dbc
-
+#### mybatis r2dbc
+refer [reactive-mybatis-support](https://github.com/chenggangpro/reactive-mybatis-support)
 ```yml
 
 r2dbc:
@@ -138,8 +137,35 @@ spring:
         acquire-retry: 3
         validation-depth: REMOTE
         max-create-connection-time: PT30S
+```
+
+#### jpa jdbc
+
+```yml
+spring:
+  jpa:
+    show-sql: true
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://127.0.0.1:3306/corp?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&allowMultiQueries=true
+    username: root
+    password: ****
+```
+
+#### jpa r2dbc
+
+```yml
+
+spring:
+  r2dbc:
+    url: r2dbc:mariadb://127.0.0.1:3306/corp?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+    username: root
+    password: ****
+#    pool:
+#      initial-size: 11
 
 ```
+
 
 ####  CachedUidGenerator rejected handler(optional)
 
