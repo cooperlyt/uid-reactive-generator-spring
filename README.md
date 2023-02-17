@@ -211,9 +211,9 @@ public void testSerialGenerate() {
 
     It is suitable for **continuously high consumption** ID distribution, and will also maintain the accuracy of ID sorting for certificate generation. This method will increase memory and CPU cache usage to a certain extent.
 
-* enableFutureTime 为true时的 DefaultUidGenerator:
+* DefaultUidGenerator and enableFutureTime is true :
 
   It is suitable for **continuously maintaining low consumption after occasional sudden consumption increases** ID distribution. This method has higher performance than CachedUidGenerator when sudden high consumption occurs, but it should not continue to maintain high consumption (consumable future The time is controlled by maxBackwardSeconds, and an exception will be thrown after exceeding), because excessive use of the future time may cause duplicate IDs to be generated after the service is restarted and the ID sorting in a short period of time will be inaccurate.
-* enableFutureTime 为false时的 DefaultUidGenerator:
+* DefaultUidGenerator and enableFutureTime is false :
 
   It is suitable for **low consumption real-time** ID distribution. This method can guarantee the accuracy of the time in the ID and can meet the high-precision ID sorting. Once the consumption is higher than the current time, a waiting response will be returned. , wait for the next available time to issue the ID (this method has the lowest performance when the consumption is greater than the number of IDs that can be generated at the current time), the maximum waiting time is controlled by maxBackwardSeconds, and an exception is thrown after exceeding.
