@@ -214,6 +214,6 @@ public void testSerialGenerate() {
 
 * enableFutureTime 为false时的 DefaultUidGenerator:
   
-  适合**低消耗量实时**的ID分发，此方式可以保正ID中的时间精确，可满足高精确性的ID排序，一但消耗量高于当前时间的发号量时会返回一个等待响应，等待下一可用时间后发出ID，最大等待时间由maxBackwardSeconds控制，超出后抛出异常。
+  适合**低消耗量实时**的ID分发，此方式可以保正ID中的时间精确，可满足高精确性的ID排序，一但消耗量高于当前时间的发号量时会返回一个等待响应，等待下一可用时间后发出ID（此方式在消费量大于当前时间可生成ID数量后性能最低），最大等待时间由maxBackwardSeconds控制，超出后抛出异常。
 
 对于发号性能的测式可使用此 [测试用例](https://github.com/cooperlyt/uid-generator-spring-boot/tree/master/uid-generator-spring-boot-starter/src/test/java/io/github/cooperlyt/cloud/uid) 进行测试，并参见[百度UidGenerator](https://github.com/baidu/uid-generator)
