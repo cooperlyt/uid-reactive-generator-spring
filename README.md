@@ -4,7 +4,7 @@ uid-generator-spring-boot-starter
 
 [In Chinese 中文版](https://github.com/cooperlyt/uid-generator-spring-boot/blob/master/README.cn.md)
 
-UidGenerator is a Java implemented, [Snowflake](https://github.com/twitter/snowflake) based reactive unique ID generator。
+UidGenerator is a Java implemented, [Snowflake](https://github.com/twitter/snowflake) based distributed unique ID generator, Supported Reactive Programming and R2DBC。
 
 Based on [Snowflake](https://github.com/twitter/snowflake)，[UidGenerator](https://github.com/baidu/uid-generator)，[uid-generator-spring-boot-starter](https://github.com/wujun234/uid-generator-spring-boot-starter)
 
