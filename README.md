@@ -63,7 +63,7 @@ Current version is:1.0.5
 <version>${uid.version}</version>
 </dependency>
         
-        <!-- database driver -->
+        <!--  example for mariadb database driver-->
         <!-- jdbc -->
 <dependency>
     <groupId>org.mariadb.jdbc</groupId>
@@ -176,7 +176,7 @@ spring:
   @Bean
   RejectedPutBufferHandler customPutHandler() {
       return (buffer, id) -> {
-      do your
+      //do your
       };
   }
 
@@ -184,7 +184,7 @@ spring:
   @Bean
   TimeIsFutureHandler customFutureTimeHandler() {
       return (futureTime, currentTime) -> {
-      do your
+      //do your
       };
   }
   
