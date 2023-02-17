@@ -223,7 +223,9 @@ private UidGenerator cachedUidGenerator;
 @Test
 public void testSerialGenerate() {
     // Generate UID
-    Mono<Long> uid = cachedUidGenerator.getUID();
+    cachedUidGenerator.getUID().flatMap(id -> {
+      Do your`s ...
+        });
 
     // Parse UID into [Timestamp, WorkerId, Sequence]
     // {"UID":"450795408770","timestamp":"2019-02-20 14:55:39","workerId":"27","sequence":"2"}
