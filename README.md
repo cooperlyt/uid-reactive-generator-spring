@@ -99,7 +99,9 @@ PRIMARY KEY(ID)
 
 ### spring boot configure
 
-#### mybatis jdbc(mariadb)
+Example for mariadb
+
+#### mybatis jdbc
 
 ```yml
 mybatis:
