@@ -2,7 +2,7 @@
 uid-generator-spring-boot
 ==========================
 
-UidGenerator是Java实现的, 基于[Snowflake](https://github.com/twitter/snowflake)算法的分布式唯一ID生成器。
+UidGenerator是Java实现的, 基于[Snowflake](https://github.com/twitter/snowflake)算法的支持响应式编程分布式唯一ID生成器。
 
 基与 [Snowflake](https://github.com/twitter/snowflake)，[百度UidGenerator](https://github.com/baidu/uid-generator)，[uid-generator-spring-boot-starter](https://github.com/wujun234/uid-generator-spring-boot-starter)
 
@@ -25,6 +25,9 @@ UidGenerator是Java实现的, 基于[Snowflake](https://github.com/twitter/snowf
 ### Maven 
 
 #### spring boot autoconfig 方式
+
+当前版本:1.0.5
+
 ```xml
 
 <!-- 根据你的项目环境 选择一种 worker node 分配方式 -->
