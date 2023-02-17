@@ -210,7 +210,7 @@ public void testSerialGenerate() {
 
 * enableFutureTime 为true时的 DefaultUidGenerator:
 
-  适合**偶然突发的消费增加后持续保持低消耗量**的ID分发，此方式在突发高消费时的性能要比CachedUidGenerator还要高，但不应该持续保持高消耗(可消耗的未来时间由maxBackwardSeconds控制，超出后抛出异常)，因为过度使用未来时间有可能会造成服务重启后生成重复ID。
+  适合**偶然突发的消费增加后持续保持低消耗量**的ID分发，此方式在突发高消费时的性能要比CachedUidGenerator还要高，但不应该持续保持高消耗(可消耗的未来时间由maxBackwardSeconds控制，超出后抛出异常)，因为过度使用未来时间有可能会造成服务重启后生成重复ID和短时间内的ID排序不精确。
 
 * enableFutureTime 为false时的 DefaultUidGenerator:
   
