@@ -149,7 +149,7 @@ spring:
       };
   }
 
-  // 由于消耗过快使用到了未来时间（未到达的时间）, 默认为允许并打印日志
+  // 由于消耗过快使用到了未来时间（未到达的时间）时的处理方式, 默认为允许并打印日志
   @Bean
   TimeIsFutureHandler customFutureTimeHandler() {
       return (futureTime, currentTime) -> {
