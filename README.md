@@ -141,7 +141,7 @@ spring:
 
 ```
 
-####  CachedUidGenerator rejected handler
+####  CachedUidGenerator rejected handler(optional)
 
 ```java
   // After generating a batch of IDs, the processing method when the buffer ring is full and cannot be filled, the default is to discard and print the log
