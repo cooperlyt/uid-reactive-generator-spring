@@ -224,7 +224,7 @@ private UidGenerator cachedUidGenerator;
 public void testSerialGenerate() {
     // Generate UID
     cachedUidGenerator.getUID().flatMap(id -> {
-      Do your`s ...
+      // Do your`s ...
         });
 
     // Parse UID into [Timestamp, WorkerId, Sequence]
