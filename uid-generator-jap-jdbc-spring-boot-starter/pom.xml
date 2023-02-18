@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.github.cooperlyt</groupId>
-        <artifactId>uid-generator-spring-boot</artifactId>
-        <version>1.0.5</version>
+        <artifactId>uid-reactive-generator-spring-boot</artifactId>
+        <version>1.0.6-SNAPSHOT</version>
     </parent>
 
     <artifactId>uid-generator-jap-jdbc-spring-boot-starter</artifactId>
@@ -20,8 +20,8 @@
     <dependencies>
         <dependency>
             <groupId>io.github.cooperlyt</groupId>
-            <artifactId>uid-generator-spring-boot-starter</artifactId>
-            <version>1.0.5</version>
+            <artifactId>uid-reactive-generator-spring-boot-starter</artifactId>
+            <version>1.0.6-SNAPSHOT</version>
         </dependency>
 
         <dependency>

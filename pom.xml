@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.cooperlyt</groupId>
-    <artifactId>uid-generator-spring-boot</artifactId>
-    <version>1.0.5</version>
+    <artifactId>uid-reactive-generator-spring-boot</artifactId>
+    <version>1.0.6-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>uid-generator-spring-boot</name>
@@ -42,10 +42,10 @@
     </developers>
 
     <modules>
-        <module>uid-generator</module>
+        <module>uid-reactive-generator</module>
         <module>uid-generator-mybatis-jdbc-spring-boot-starter</module>
-        <module>uid-generator-api</module>
-        <module>uid-generator-spring-boot-starter</module>
+        <module>uid-reactive-generator-api</module>
+        <module>uid-reactive-generator-spring-boot-starter</module>
         <module>uid-generator-mybatis-r2dbc-spring-boot-starter</module>
         <module>uid-generator-jpa-r2dbc-spring-boot-starter</module>
         <module>uid-generator-jap-jdbc-spring-boot-starter</module>

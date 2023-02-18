@@ -2,7 +2,7 @@
 uid-generator-spring-boot
 ==========================
 
-UidGenerator是Java实现的, 基于[Snowflake](https://github.com/twitter/snowflake)算法的支持响应式编程分布式唯一ID生成器。
+UidReactiveGenerator是Java实现的, 基于[Snowflake](https://github.com/twitter/snowflake)算法的支持响应式编程分布式唯一ID生成器。
 
 基与 [雪花算法](https://github.com/twitter/snowflake)，[百度UidGenerator](https://github.com/baidu/uid-generator)，[uid-generator-spring-boot-starter](https://github.com/wujun234/uid-generator-spring-boot-starter)
 
