@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.github.cooperlyt</groupId>
-        <artifactId>uid-reactive-generator-spring-boot</artifactId>
+        <artifactId>uid-reactive-generator-spring</artifactId>
         <version>1.0.6-SNAPSHOT</version>
     </parent>
 

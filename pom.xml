@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.cooperlyt</groupId>
-    <artifactId>uid-reactive-generator-spring-boot</artifactId>
+    <artifactId>uid-reactive-generator-spring</artifactId>
     <version>1.0.6-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>uid-generator-spring-boot</name>
+    <name>uid-reactive-generator-spring</name>
     <description>UidGenerator is a Java implemented, Snowflake based unique ID generator.</description>
     <url>https://github.com/cooperlyt/uid-generator-spring-boot</url>
 
@@ -23,9 +23,9 @@
 
     <scm>
         <tag>${project.version}</tag>
-        <connection>scm:git@github.com:cooperlyt/uid-generator-spring-boot.git</connection>
-        <developerConnection>scm:git@github.com:cooperlyt/uid-generator-spring-boot.git</developerConnection>
-        <url>https://github.com/cooperlyt/uid-generator-spring-boot</url>
+        <connection>scm:git@github.com:cooperlyt/uid-reactive-generator-spring.git</connection>
+        <developerConnection>scm:git@github.com:cooperlyt/uid-reactive-generator-spring.git</developerConnection>
+        <url>https://github.com/cooperlyt/uid-reactive-generator-spring</url>
     </scm>
 
     <developers>
