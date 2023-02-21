@@ -10,6 +10,10 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/r2dbc-test/pom.xml" />
+        <option value="$PROJECT_DIR$/uid-generator-jap-jdbc-spring-boot-starter/pom.xml" />
+        <option value="$PROJECT_DIR$/uid-generator-jpa-r2dbc-spring-boot-starter/pom.xml" />
+        <option value="$PROJECT_DIR$/uid-generator-mybatis-jdbc-spring-boot-starter/pom.xml" />
+        <option value="$PROJECT_DIR$/uid-generator-mybatis-r2dbc-spring-boot-starter/pom.xml" />
         <option value="$PROJECT_DIR$/uid-worker-id-db-provider/pom.xml" />
         <option value="$PROJECT_DIR$/uid-worker-node-id-provider/pom.xml" />
       </set>

@@ -1,1 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=io.github.cooperlyt.cloud.uid.worker.mybatis.jdbc.WorkerIdAutoConfigure

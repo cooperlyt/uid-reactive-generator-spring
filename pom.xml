@@ -43,12 +43,11 @@
 
     <modules>
         <module>uid-reactive-generator</module>
-        <module>uid-generator-mybatis-jdbc-spring-boot-starter</module>
         <module>uid-reactive-generator-api</module>
         <module>uid-reactive-generator-spring-boot-starter</module>
-        <module>uid-generator-mybatis-r2dbc-spring-boot-starter</module>
-        <module>uid-generator-jpa-r2dbc-spring-boot-starter</module>
-        <module>uid-generator-jap-jdbc-spring-boot-starter</module>
+        <module>example</module>
+        <module>uid-reactive-generator-db-spring-boot-starter</module>
+        <module>uid-reactive-generator-spring-cloud-starter-discovery</module>
     </modules>
 
     <properties>
@@ -113,6 +112,7 @@
     <profiles>
         <profile>
             <id>release</id>
+
             <properties>
                 <javadoc.opts>-Xdoclint:none</javadoc.opts>
             </properties>

@@ -9,7 +9,7 @@
         <version>1.0.6-SNAPSHOT</version>
     </parent>
 
-    <artifactId>uid-reactive-generator-spring-boot-starter</artifactId>
+    <artifactId>uid-reactive-generator-spring-cloud-starter-discovery</artifactId>
 
     <properties>
         <maven.compiler.source>15</maven.compiler.source>
@@ -20,34 +20,17 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>io.github.cooperlyt</groupId>
-            <artifactId>uid-reactive-generator</artifactId>
+            <artifactId>uid-reactive-generator-spring-boot-starter</artifactId>
             <version>1.0.6-SNAPSHOT</version>
         </dependency>
 
-
-
-        <!-- test by jdbc and mariadb -->
-
-<!--        <dependency>-->
-<!--            <groupId>io.github.cooperlyt</groupId>-->
-<!--            <artifactId>uid-generator-jpa-r2dbc-spring-boot-starter</artifactId>-->
-<!--            <version>1.0.5-SNAPSHOT</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>org.mariadb.jdbc</groupId>-->
-<!--            <artifactId>mariadb-java-client</artifactId>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-
-
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-commons</artifactId>
+            <version>3.1.5</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 </project>
