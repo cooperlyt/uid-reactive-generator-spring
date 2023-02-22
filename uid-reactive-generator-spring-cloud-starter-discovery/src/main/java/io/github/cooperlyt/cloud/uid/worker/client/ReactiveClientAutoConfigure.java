@@ -1,19 +1,20 @@
-package ui.github.cooperlyt.cloud.uid.worker;
+package io.github.cooperlyt.cloud.uid.worker.client;
 
-import io.github.cooperlyt.cloud.uid.worker.WorkerIdAssigner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.client.ConditionalOnReactiveDiscoveryEnabled;
 import org.springframework.cloud.client.discovery.ReactiveDiscoveryClient;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 
 @ConditionalOnReactiveDiscoveryEnabled
-public class WorkerNodeIdReactiveAutoConfigure {
+@Configuration
+public class ReactiveClientAutoConfigure {
 
   @Bean
   @ConditionalOnMissingBean
   @Lazy
-  WorkerIdAssigner workerIdAssigner(ReactiveDiscoveryClient discoveryClient){
-    return null;
+  DiscoveryClientAdapter orderGenerator(ReactiveDiscoveryClient discoveryClient){
+    return new ReactiveDiscoveryClientAdapter(discoveryClient);
   }
 }

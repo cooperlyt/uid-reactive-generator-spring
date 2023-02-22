@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration= \
+  io.github.cooperlyt.cloud.uid.worker.client.BlockingClientAutoConfigure, \
+  io.github.cooperlyt.cloud.uid.worker.client.ReactiveClientAutoConfigure, \
+  io.github.cooperlyt.cloud.uid.worker.WorkerIdAssignerAutoConfigure

@@ -1,5 +1,5 @@
 
-uid-generator-spring-boot
+uid-reactive-generator-spring
 ==========================
 
 UidReactiveGenerator是Java实现的, 基于[Snowflake](https://github.com/twitter/snowflake)算法的支持响应式编程分布式唯一ID生成器。
@@ -22,63 +22,58 @@ UidReactiveGenerator是Java实现的, 基于[Snowflake](https://github.com/twitt
 
 ## 使用
 
-### Maven 
 
 #### spring boot autoconfig 方式
 
-当前版本:1.0.5
+#### Worker node ID by Spring Discover service(不需要数据库)
 
 ```xml
-
-<!-- 根据你的项目环境 选择一种 worker node 分配方式 -->
-
-<!-- 以下仅选一种即可，多了会冲突 -->
-
-<!--mybatis jdbc -->
 <dependency>
-    <groupId>cooperlyt.github.io</groupId>
-    <artifactId>uid-generator-mybatis-jdbc-spring-boot-starter</artifactId>
-    <version>${uid.version}</version>
+  <groupId>io.github.cooperlyt</groupId>
+  <artifactId>uid-reactive-generator-spring-cloud-starter-discovery</artifactId>
+  <version>1.1.1</version>
 </dependency>
 
-        <!--mybatis r2dbc -->
-<dependency>
-<groupId>cooperlyt.github.io</groupId>
-<artifactId>uid-generator-mybatis-r2dbc-spring-boot-starter</artifactId>
-<version>${uid.version}</version>
-</dependency>
-
-
-        <!--jpa jdbc -->
-<dependency>
-<groupId>cooperlyt.github.io</groupId>
-<artifactId>uid-generator-jap-jdbc-spring-boot-starter</artifactId>
-<version>${uid.version}</version>
-</dependency>
-
-        <!--jpa r2dbc -->
-<dependency>
-<groupId>cooperlyt.github.io</groupId>
-<artifactId>uid-generator-jpa-r2dbc-spring-boot-starter</artifactId>
-<version>${uid.version}</version>
-</dependency>
-
-        <!-- 选择相印的数据库驱动包 -->
-        <!-- jdbc驱动 -->
-<dependency>
-    <groupId>org.mariadb.jdbc</groupId>
-    <artifactId>mariadb-java-client</artifactId>
-</dependency>
-
-        <!-- r2dbc驱动 -->
-<dependency>
-    <groupId>org.mariadb</groupId>
-    <artifactId>r2dbc-mariadb</artifactId>
-    <version>1.1.3</version>
-</dependency>
-
+... 
 ```
-由于开发时Mybatis官方还不支持r2dbc所以使用了[reactive-mybatis-support](https://github.com/chenggangpro/reactive-mybatis-support)
+NOTE: 仅在Consul下测试，其它发现服务器没有进行测试。
+
+#### Worker node ID by DB
+
+```xml
+<dependency>
+  <groupId>io.github.cooperlyt</groupId>
+  <artifactId>uid-reactive-generator-db-spring-boot-starter</artifactId>
+  <version>1.1.1</version>
+</dependency>
+```
+* Mybatis JDBC:
+```xml
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+```
+* Mybatis R2DBC
+
+  参见 [reactive-mybatis-support](https://github.com/chenggangpro/reactive-mybatis-support)
+  
+* JPA JDBC:
+```xml
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-data-jpa</artifactId>
+                </dependency>
+```
+* JPA R2DBC
+```xml
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-r2dbc</artifactId>
+        </dependency>
+```
+
 
 
 ### 数据库（可选）
@@ -96,49 +91,6 @@ MODIFIED TIMESTAMP NOT NULL COMMENT 'modified time',
 CREATED TIMESTAMP NOT NULL COMMENT 'created time',
 PRIMARY KEY(ID)
 ) COMMENT='DB WorkerID Assigner for UID Generator',ENGINE = INNODB;
-```
-
-### spring boot 配置
-
-#### jdbc  配置 (以mariadb为例)
-
-```yml
-mybatis:
-  configuration:
-    default-fetch-size: 100
-    default-statement-timeout: 30
-    map-underscore-to-camel-case: true
-spring:
-  datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://127.0.0.1:3306/database?
-    username: root
-    password: ****
-```
-
-#### r2dbc 配置
-
-```yml
-
-r2dbc:
-  mybatis:
-    mapper-locations: classpath:mapper/*.xml
-    map-underscore-to-camel-case: true
-spring:
-  r2dbc:
-    mybatis:
-      r2dbc-url: r2dbc:mariadb://127.0.0.1:3306/database
-      username: root
-      password: ****
-      pool:
-        max-idle-time: PT3M
-        validation-query: SELECT 1 FROM DUAL
-        initial-size: 1
-        max-size: 3
-        acquire-retry: 3
-        validation-depth: REMOTE
-        max-create-connection-time: PT30S
-
 ```
 
 #### 自定义 CachedUidGenerator 拒绝策略 

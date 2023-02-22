@@ -6,7 +6,7 @@
 
     <groupId>io.github.cooperlyt</groupId>
     <artifactId>uid-reactive-generator-spring</artifactId>
-    <version>1.0.6-SNAPSHOT</version>
+    <version>1.1.1</version>
     <packaging>pom</packaging>
 
     <name>uid-reactive-generator-spring</name>
@@ -112,6 +112,14 @@
     <profiles>
         <profile>
             <id>release</id>
+
+            <modules>
+                <module>uid-reactive-generator</module>
+                <module>uid-reactive-generator-api</module>
+                <module>uid-reactive-generator-spring-boot-starter</module>
+                <module>uid-reactive-generator-db-spring-boot-starter</module>
+                <module>uid-reactive-generator-spring-cloud-starter-discovery</module>
+            </modules>
 
             <properties>
                 <javadoc.opts>-Xdoclint:none</javadoc.opts>

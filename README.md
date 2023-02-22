@@ -1,5 +1,5 @@
 
-uid-generator-spring-boot-starter
+uid-reactive-generator-spring
 ==========================
 
 [In Chinese 中文版](https://github.com/cooperlyt/uid-generator-spring-boot/blob/master/README.cn.md)
@@ -14,7 +14,8 @@ Based on [Snowflake](https://github.com/twitter/snowflake)，[UidGenerator](http
 * Supported Reactive Programming，Return a `Mono<Long>`, 
   * In CachedUidGenerator：When consumption rate is higher than refill rate，Notify subscribers in a non-blocking manner after waiting for the fill to complete.
   * In DefaultUidGenerator and not allow use future time state：Notify subscribers in a non-blocking way after the current time ID is exhausted and waits for the next second.
-* Supported mybatis jdbc, mybatis r2bc , jap jdbc , jap r2dbc 
+* Supported get worker node id from db by mybatis jdbc, mybatis r2bc , jap jdbc , jap r2dbc 
+* Supported get worker node id from Spring Discovery service
 
 
 ## Principle and performance
@@ -23,150 +24,74 @@ Refer [Snowflake](https://github.com/twitter/snowflake) and [UidGenerator](https
 
 ## Usage
 
-### Maven 
+###  For Spring boot autoconfig
 
-#### for Spring boot autoconfig 
-
-Current version is:1.0.5
+#### Worker node ID by Spring Discover service(not need databases)
 
 ```xml
-
-<!-- Choose one and only on -->
-
-
-<!--mybatis jdbc -->
 <dependency>
-    <groupId>cooperlyt.github.io</groupId>
-    <artifactId>uid-generator-mybatis-jdbc-spring-boot-starter</artifactId>
-    <version>${uid.version}</version>
+  <groupId>io.github.cooperlyt</groupId>
+  <artifactId>uid-reactive-generator-spring-cloud-starter-discovery</artifactId>
+  <version>1.1.1</version>
 </dependency>
 
-        <!--mybatis r2dbc -->
-<dependency>
-<groupId>cooperlyt.github.io</groupId>
-<artifactId>uid-generator-mybatis-r2dbc-spring-boot-starter</artifactId>
-<version>${uid.version}</version>
-</dependency>
+... 
+```
+NOTE: only test on Consul
 
+#### Worker node ID by DB
 
-        <!--jpa jdbc -->
+```xml
 <dependency>
-<groupId>cooperlyt.github.io</groupId>
-<artifactId>uid-generator-jap-jdbc-spring-boot-starter</artifactId>
-<version>${uid.version}</version>
+  <groupId>io.github.cooperlyt</groupId>
+  <artifactId>uid-reactive-generator-db-spring-boot-starter</artifactId>
+  <version>1.1.1</version>
 </dependency>
-
-        <!--jpa r2dbc -->
-<dependency>
-<groupId>cooperlyt.github.io</groupId>
-<artifactId>uid-generator-jpa-r2dbc-spring-boot-starter</artifactId>
-<version>${uid.version}</version>
-</dependency>
-        
-        <!--  example for mariadb database driver-->
-        <!-- jdbc -->
-<dependency>
-    <groupId>org.mariadb.jdbc</groupId>
-    <artifactId>mariadb-java-client</artifactId>
-</dependency>
-
-        <!-- r2dbc -->
-<dependency>
-    <groupId>org.mariadb</groupId>
-    <artifactId>r2dbc-mariadb</artifactId>
-    <version>1.1.3</version>
-</dependency>
-
+```
+* Mybatis JDBC:
+```xml
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+```
+* Mybatis R2DBC
+  Refer [reactive-mybatis-support](https://github.com/chenggangpro/reactive-mybatis-support)
+* JPA JDBC:
+```xml
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-data-jpa</artifactId>
+                </dependency>
+```
+* JPA R2DBC
+```xml
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-r2dbc</artifactId>
+        </dependency>
 ```
 
 
-### Databases（optional）
-Table WORKER_NODE scrip：
+* Databases scrip：
 ```sql
 DROP TABLE IF EXISTS WORKER_NODE;
 CREATE TABLE WORKER_NODE
 (
-ID BIGINT NOT NULL AUTO_INCREMENT COMMENT 'auto increment id',
-HOST_NAME VARCHAR(64) NOT NULL COMMENT 'host name',
-PORT VARCHAR(64) NOT NULL COMMENT 'port',
-TYPE INT NOT NULL COMMENT 'node type: CONTAINER(1), ACTUAL(2), FAKE(3)',
-LAUNCH_DATE DATE NOT NULL COMMENT 'launch date',
-MODIFIED TIMESTAMP NOT NULL COMMENT 'modified time',
-CREATED TIMESTAMP NOT NULL COMMENT 'created time',
-PRIMARY KEY(ID)
+  ID BIGINT NOT NULL AUTO_INCREMENT COMMENT 'auto increment id',
+  HOST VARCHAR(64) NOT NULL COMMENT 'host name',
+  PORT VARCHAR(64) NOT NULL COMMENT 'port',
+  TYPE INT NOT NULL COMMENT 'node type: CONTAINER(1), ACTUAL(2), FAKE(3)',
+  LAUNCH DATE NOT NULL COMMENT 'launch date',
+  MODIFIED TIMESTAMP NOT NULL COMMENT 'modified time',
+  CREATED TIMESTAMP NOT NULL COMMENT 'created time',
+  PRIMARY KEY(ID)
 ) COMMENT='DB WorkerID Assigner for UID Generator',ENGINE = INNODB;
 ```
 
-### spring boot configure
 
-Example for mariadb
 
-#### mybatis jdbc
-
-```yml
-mybatis:
-  configuration:
-    default-fetch-size: 100
-    default-statement-timeout: 30
-    map-underscore-to-camel-case: true
-spring:
-  datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://127.0.0.1:3306/database?
-    username: root
-    password: ****
-```
-
-#### mybatis r2dbc
-refer [reactive-mybatis-support](https://github.com/chenggangpro/reactive-mybatis-support)
-```yml
-
-r2dbc:
-  mybatis:
-    mapper-locations: classpath:mapper/*.xml
-    map-underscore-to-camel-case: true
-spring:
-  r2dbc:
-    mybatis:
-      r2dbc-url: r2dbc:mariadb://127.0.0.1:3306/database
-      username: root
-      password: ****
-      pool:
-        max-idle-time: PT3M
-        validation-query: SELECT 1 FROM DUAL
-        initial-size: 1
-        max-size: 3
-        acquire-retry: 3
-        validation-depth: REMOTE
-        max-create-connection-time: PT30S
-```
-
-#### jpa jdbc
-
-```yml
-spring:
-  jpa:
-    show-sql: true
-  datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://127.0.0.1:3306/corp?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&allowMultiQueries=true
-    username: root
-    password: ****
-```
-
-#### jpa r2dbc
-
-```yml
-
-spring:
-  r2dbc:
-    url: r2dbc:mariadb://127.0.0.1:3306/corp?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
-    username: root
-    password: ****
-#    pool:
-#      initial-size: 11
-
-```
 
 
 ####  CachedUidGenerator rejected handler(optional)

@@ -92,6 +92,7 @@ public class DefaultUidGenerator implements UidGenerator, InitializingBean, Disp
 
   @Override
   public void afterPropertiesSet() throws Exception {
+    log.debug("uid is begging initialize");
     // initialize bits allocator
     bitsAllocator = new BitsAllocator(uidProperties.getTimeBits(), uidProperties.getWorkerBits(), uidProperties.getSeqBits());
 
@@ -103,6 +104,7 @@ public class DefaultUidGenerator implements UidGenerator, InitializingBean, Disp
             return workerId % bitsAllocator.getMaxWorkerId();
 
           }
+          log.debug("Initialized worker node id:{}",workerId);
           return workerId;
         })
         .switchIfEmpty(Mono.error(new IllegalAccessException()))
@@ -114,6 +116,7 @@ public class DefaultUidGenerator implements UidGenerator, InitializingBean, Disp
   @Override
   public Mono<Long> getUID() throws UidGenerateException {
     try {
+      log.debug("request uid by default");
       return nextId();
     } catch (Exception e) {
       log.error("Generate unique id exception. ", e);

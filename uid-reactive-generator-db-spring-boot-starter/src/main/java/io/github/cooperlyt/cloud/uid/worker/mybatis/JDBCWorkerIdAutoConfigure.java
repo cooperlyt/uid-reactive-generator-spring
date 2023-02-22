@@ -5,9 +5,9 @@ import io.github.cooperlyt.cloud.uid.worker.WorkerNodeIdent;
 import io.github.cooperlyt.cloud.uid.worker.mybatis.mapper.jdbc.WorkerNodeMapper;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,10 +15,10 @@ import org.springframework.context.annotation.Lazy;
 
 
 @ConditionalOnClass({SqlSessionFactory.class})
+@ConditionalOnMissingClass("pro.chenggang.project.reactive.mybatis.support.r2dbc.MybatisReactiveContextManager")
 @ConditionalOnProperty(prefix = "spring.datasource",name = "url")
 @Configuration
 @MapperScan("io.github.cooperlyt.cloud.uid.worker.mybatis.mapper.jdbc")
-@AutoConfigureAfter(R2DBCWorkerIdAutoConfigure.class)
 public class JDBCWorkerIdAutoConfigure {
   @Bean
   @ConditionalOnMissingBean

@@ -21,7 +21,6 @@ import org.springframework.data.jpa.repository.config.JpaRepositoryNameSpaceHand
 @ConditionalOnProperty(prefix = "spring.datasource",name = "url")
 @EnableJpaRepositories("io.github.cooperlyt.cloud.uid.worker.jpa.repositories.jdbc")
 @EntityScan("io.github.cooperlyt.cloud.uid.worker.entities")
-@AutoConfigureAfter({R2DBCWorkerIdAutoConfigure.class})
 public class JDBCWorkerIdAutoConfigure {
 
   @Bean

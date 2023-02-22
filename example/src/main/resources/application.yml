@@ -6,37 +6,14 @@ spring:
   application:
     name: uid-example
   profiles:
-    active: mybatis-r2dbc
-  cloud:
-    loadbalancer:
-      ribbon:
-        enabled: false
-    consul:
-      ribbon:
-        enabled: false
-      discovery:
-        serviceName: ${spring.application.name}
-        # 启用服务发现
-        enabled: true
-        # 启用服务注册
-        register: true
-        # 服务停止时取消注册
-        deregister: true
-        # 表示注册时使用IP而不是hostname
-        prefer-ip-address: true
-        # 执行监控检查的频率
-        health-check-interval: 30s
-        # 设置健康检查失败多长时间后，取消注册
-        health-check-critical-timeout: 30s
-        # 健康检查的路径
-        health-check-path: /actuator/info
-        # 服务注册标识，格式为：应用名称+服务器IP+端口
-        instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
-      host: 127.0.0.1
-      port: 8500
+    active: jdbc
   sql:
     init:
       mode: never
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
 
 #开启actuator管理api
 management:
@@ -124,3 +101,41 @@ spring:
     url: "r2dbc:mariadb://127.0.0.1:3306/corp?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&allowMultiQueries=true"
     username: root
     password: 5257mq
+
+---
+
+spring:
+
+  config:
+    activate:
+      on-profile: cloud
+
+    import: optional:consul:${spring.cloud.consul.host}:${spring.cloud.consul.port}
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+    consul:
+      ribbon:
+        enabled: false
+      discovery:
+        serviceName: ${spring.application.name}
+        # 启用服务发现
+        enabled: true
+        # 启用服务注册
+        register: true
+        # 服务停止时取消注册
+        deregister: true
+        # 表示注册时使用IP而不是hostname
+        prefer-ip-address: true
+        # 执行监控检查的频率
+        health-check-interval: 30s
+        # 设置健康检查失败多长时间后，取消注册
+        health-check-critical-timeout: 30s
+        # 健康检查的路径
+        health-check-path: /actuator/info
+        # 服务注册标识，格式为：应用名称+服务器IP+端口
+        instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+
+
+
