@@ -13,6 +13,7 @@ UidReactiveGenerator是Java实现的, 基于[Snowflake](https://github.com/twitt
   * 在CachedUidGenerator：消耗速度高于填充速度时，等待填充完成后以非阻塞的方式通知订阅者。
   * 在DefaultUidGenerator不允许使用未来时间（未到达的时间）状态：当前时间ID耗尽等待下一秒后非阻塞的方式通知订阅者
 * 支持 mybatis jdbc, mybatis r2bc , jap jdbc ,jap r2dbc 四种数据库连接方式
+* 支持通过Spring发现服务生成WorkerNodeID（不需要数据库）
 
 你以可以根据[接口包](https://github.com/cooperlyt/uid-generator-spring-boot/tree/master/uid-generator-api)自己实现Worker node分配的实现
 
