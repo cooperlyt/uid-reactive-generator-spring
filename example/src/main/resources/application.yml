@@ -6,14 +6,11 @@ spring:
   application:
     name: uid-example
   profiles:
-    active: jdbc
+    active: jpa-r2dbc
   sql:
     init:
       mode: never
-  cloud:
-    consul:
-      host: localhost
-      port: 8500
+
 
 #开启actuator管理api
 management:
@@ -59,36 +56,10 @@ spring:
     activate:
       on-profile: jdbc
 
-    import: optional:consul:${spring.cloud.consul.host}:${spring.cloud.consul.port}
   datasource:
     url: "jdbc:mariadb://127.0.0.1:3306/corp?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&allowMultiQueries=true"
     username: "root"
     password: "5257mq"
-
----
-
-spring:
-  config:
-    activate:
-      on-profile: mybatis-r2dbc
-
-    import: optional:consul:${spring.cloud.consul.host}:${spring.cloud.consul.port}
-  r2dbc:
-    mybatis:
-      r2dbc-url: r2dbc:mariadb://127.0.0.1:3306/corp?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
-      username: root
-      password: 5257mq
-      pool:
-        max-idle-time: PT3M
-        validation-query: SELECT 1 FROM DUAL
-        initial-size: 1
-        max-size: 3
-        acquire-retry: 3
-        validation-depth: REMOTE
-        max-create-connection-time: PT30S
-r2dbc:
-  mybatis:
-    map-underscore-to-camel-case: true
 
 ---
 spring:
@@ -96,7 +67,6 @@ spring:
     activate:
       on-profile: jpa-r2dbc
 
-    import: optional:consul:${spring.cloud.consul.host}:${spring.cloud.consul.port}
   r2dbc:
     url: "r2dbc:mariadb://127.0.0.1:3306/corp?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&allowMultiQueries=true"
     username: root
@@ -105,17 +75,16 @@ spring:
 ---
 
 spring:
-
   config:
     activate:
       on-profile: cloud
-
-    import: optional:consul:${spring.cloud.consul.host}:${spring.cloud.consul.port}
   cloud:
     loadbalancer:
       ribbon:
         enabled: false
     consul:
+      host: localhost
+      port: 8500
       ribbon:
         enabled: false
       discovery:

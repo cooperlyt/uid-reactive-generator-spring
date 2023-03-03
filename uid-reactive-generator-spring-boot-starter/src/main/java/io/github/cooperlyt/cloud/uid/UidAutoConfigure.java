@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Lazy;
  * @date 2019.02.20 10:57
  */
 @Slf4j
-@Configuration
+@Configuration(enforceUniqueMethods = false)
 public class UidAutoConfigure {
 
 

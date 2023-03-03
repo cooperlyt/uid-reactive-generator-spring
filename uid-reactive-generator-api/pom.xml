@@ -6,16 +6,11 @@
     <parent>
         <groupId>io.github.cooperlyt</groupId>
         <artifactId>uid-reactive-generator-spring</artifactId>
-        <version>1.1.1</version>
+        <version>1.2.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>uid-reactive-generator-api</artifactId>
 
-    <properties>
-        <maven.compiler.source>15</maven.compiler.source>
-        <maven.compiler.target>15</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
     <dependencies>
         <dependency>

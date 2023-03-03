@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Lazy;
 
 
 @ConditionalOnClass({SqlSessionFactory.class})
-@ConditionalOnMissingClass("pro.chenggang.project.reactive.mybatis.support.r2dbc.MybatisReactiveContextManager")
 @ConditionalOnProperty(prefix = "spring.datasource",name = "url")
 @Configuration
 @MapperScan("io.github.cooperlyt.cloud.uid.worker.mybatis.mapper.jdbc")

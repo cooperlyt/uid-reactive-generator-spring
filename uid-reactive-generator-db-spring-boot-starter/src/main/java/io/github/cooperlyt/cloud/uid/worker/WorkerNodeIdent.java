@@ -1,11 +1,11 @@
 package io.github.cooperlyt.cloud.uid.worker;
 
+import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.MappedSuperclass;
 
 @Data
 @SuperBuilder

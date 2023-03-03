@@ -24,6 +24,14 @@ Refer [Snowflake](https://github.com/twitter/snowflake) and [UidGenerator](https
 
 ## Usage
 
+
+#### Description of applicable version
+
+|project-version|spring-boot|
+|:--|:--|
+|`1.1.x`|`<=2.7.x`|
+|`1.2.x`|`>=3`|
+
 ###  For Spring boot autoconfig
 
 #### Worker node ID by Spring Discover service(not need databases)
@@ -56,8 +64,11 @@ NOTE: only test on Consul
             <version>2.3.0</version>
         </dependency>
 ```
-* Mybatis R2DBC
-  Refer [reactive-mybatis-support](https://github.com/chenggangpro/reactive-mybatis-support)
+* Mybatis R2DBC (Remove from 1.2.x)
+
+  参见 [reactive-mybatis-support](https://github.com/chenggangpro/reactive-mybatis-support)
+
+
 * JPA JDBC:
 ```xml
                 <dependency>

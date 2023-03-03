@@ -1,0 +1,4 @@
+io.github.cooperlyt.cloud.uid.worker.WorkerNodeIdentAutoConfigure
+io.github.cooperlyt.cloud.uid.worker.mybatis.JDBCWorkerIdAutoConfigure
+io.github.cooperlyt.cloud.uid.worker.jpa.JDBCWorkerIdAutoConfigure
+io.github.cooperlyt.cloud.uid.worker.jpa.R2DBCWorkerIdAutoConfigure

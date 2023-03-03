@@ -23,6 +23,10 @@ UidReactiveGenerator是Java实现的, 基于[Snowflake](https://github.com/twitt
 
 ## 使用
 
+|project-version|spring-boot|
+|:--|:--|
+|`1.1.x`|`<=2.7.x`|
+|`1.2.x`|`>=3`|
 
 #### spring boot autoconfig 方式
 
@@ -56,7 +60,7 @@ NOTE: 仅在Consul下测试，其它发现服务器没有进行测试。
             <version>2.3.0</version>
         </dependency>
 ```
-* Mybatis R2DBC
+* Mybatis R2DBC (从1.2版本以后移除)
 
   参见 [reactive-mybatis-support](https://github.com/chenggangpro/reactive-mybatis-support)
   

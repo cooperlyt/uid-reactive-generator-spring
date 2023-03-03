@@ -16,6 +16,9 @@
 package io.github.cooperlyt.cloud.uid.worker.entities;
 
 import io.github.cooperlyt.cloud.uid.worker.WorkerNodeIdent;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,9 +26,7 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -35,7 +36,7 @@ import java.time.LocalDateTime;
  * @author yutianbao
  */
 @Table("WORKER_NODE")
-@javax.persistence.Table(name = "WORKER_NODE")
+@jakarta.persistence.Table(name = "WORKER_NODE")
 @Entity
 @Data
 @SuperBuilder
@@ -47,7 +48,7 @@ public class WorkerNodeEntity extends WorkerNodeIdent {
      * Entity unique id (table unique)
      */
     @Id
-    @javax.persistence.Id
+    @jakarta.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
