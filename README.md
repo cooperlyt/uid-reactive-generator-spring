@@ -53,7 +53,7 @@ NOTE: only test on Consul
 <dependency>
   <groupId>io.github.cooperlyt</groupId>
   <artifactId>uid-reactive-generator-db-spring-boot-starter</artifactId>
-  <version>1.1.1</version>
+  <version>1.2.1</version>
 </dependency>
 ```
 * Mybatis JDBC:
