@@ -40,7 +40,7 @@ Refer [Snowflake](https://github.com/twitter/snowflake) and [UidGenerator](https
 <dependency>
   <groupId>io.github.cooperlyt</groupId>
   <artifactId>uid-reactive-generator-spring-cloud-starter-discovery</artifactId>
-  <version>1.1.1</version>
+  <version>1.2.1</version>
 </dependency>
 
 ... 
