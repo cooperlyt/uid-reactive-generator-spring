@@ -175,6 +175,10 @@ public class BufferPaddingExecutor {
             long providerTime = lastSecond.incrementAndGet();
             long currentTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
             if (providerTime > currentTime){
+                if (ringBuffer.getTail() != ringBuffer.getCursor()){
+                    log.info("Padding buffer is not empty, stop padding. {}", ringBuffer);
+                    break;
+                }
                 timeIsFutureHandler.timeIsFuture(providerTime,currentTime);
             }
             List<Long> uidList = uidProvider.provide(workerId,providerTime);

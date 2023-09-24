@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.github.cooperlyt</groupId>
         <artifactId>uid-reactive-generator-spring</artifactId>
-        <version>1.2.2-snapshot</version>
+        <version>1.2.2</version>
     </parent>
 
     <artifactId>uid-reactive-generator-db-spring-boot-starter</artifactId>
@@ -15,7 +15,7 @@
         <dependency>
             <groupId>io.github.cooperlyt</groupId>
             <artifactId>uid-reactive-generator-spring-boot-starter</artifactId>
-            <version>1.2.2-snapshot</version>
+            <version>1.2.2</version>
         </dependency>
 
         <dependency>

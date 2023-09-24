@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.github.cooperlyt</groupId>
         <artifactId>uid-reactive-generator-spring</artifactId>
-        <version>1.2.2-snapshot</version>
+        <version>1.2.2</version>
     </parent>
 
     <artifactId>uid-reactive-generator-spring-boot-starter</artifactId>
@@ -21,10 +21,14 @@
         <dependency>
             <groupId>io.github.cooperlyt</groupId>
             <artifactId>uid-reactive-generator</artifactId>
-            <version>1.2.2-snapshot</version>
+            <version>1.2.2</version>
         </dependency>
 
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+        </dependency>
 
         <!-- test by jdbc and mariadb -->
 
@@ -46,6 +50,7 @@
             <artifactId>reactor-test</artifactId>
             <scope>test</scope>
         </dependency>
+
 
     </dependencies>
 

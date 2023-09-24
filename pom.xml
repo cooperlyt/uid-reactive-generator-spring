@@ -6,7 +6,7 @@
 
     <groupId>io.github.cooperlyt</groupId>
     <artifactId>uid-reactive-generator-spring</artifactId>
-    <version>1.2.2-snapshot</version>
+    <version>1.2.2</version>
     <packaging>pom</packaging>
 
     <name>uid-reactive-generator-spring</name>
