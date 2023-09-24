@@ -51,6 +51,7 @@ public class DiscoveryWorkerIdAssigner implements WorkerIdAssigner {
     sink.tryEmitValue(event).orThrow();
   }
 
+
   @EventListener
   public void onPreRegisteredEvent(InstancePreRegisteredEvent event) {
 
@@ -59,6 +60,7 @@ public class DiscoveryWorkerIdAssigner implements WorkerIdAssigner {
     prepareWorkerId = discoveryClientAdapter.getInstances(serverId)
         .filter(instance -> !instance.getInstanceId().equals(instanceId))
         .map(this::getOrder)
+
         .reduce(0L,(max,order) -> (order > max) ? order : max)
         .blockOptional().orElse(0L) + 1L;
 

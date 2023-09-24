@@ -24,7 +24,7 @@ public class R2DBCWorkerIdAssigner extends HostWorkerIdAssigner {
 
   @Transactional(rollbackFor = Exception.class)
   @Override
-  protected Mono<Long> assignWorkerId(WorkerNodeIdent workerNodeIdent) {
+  public Mono<Long> assignWorkerId(WorkerNodeIdent workerNodeIdent) {
     return workerNodeRepository
         .getWorkerNodeByHostAndPort(workerNodeIdent.getHost(),workerNodeIdent.getPort())
         .map(Optional::of)

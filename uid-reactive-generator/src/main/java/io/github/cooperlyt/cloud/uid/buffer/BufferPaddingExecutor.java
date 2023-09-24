@@ -17,6 +17,7 @@ package io.github.cooperlyt.cloud.uid.buffer;
 
 import io.github.cooperlyt.cloud.uid.utils.NamingThreadFactory;
 import io.github.cooperlyt.cloud.uid.utils.PaddedAtomicLong;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
@@ -93,13 +94,16 @@ public class BufferPaddingExecutor {
         }
     }
 
+    private long workerId;
     /**
      * Start executors such as schedule
      */
-    public void start() {
+    public void start(long workerId) {
+        this.workerId = workerId;
         if (bufferPadSchedule != null) {
             bufferPadSchedule.scheduleWithFixedDelay(this::asyncPadding, scheduleInterval, scheduleInterval, TimeUnit.SECONDS);
         }
+        paddingFuture = CompletableFuture.runAsync(this::paddingBuffer,bufferPadExecutors);
     }
 
     /**
@@ -109,7 +113,6 @@ public class BufferPaddingExecutor {
         if (!bufferPadExecutors.isShutdown()) {
             bufferPadExecutors.shutdownNow();
         }
-
         if (bufferPadSchedule != null && !bufferPadSchedule.isShutdown()) {
             bufferPadSchedule.shutdownNow();
         }
@@ -125,26 +128,38 @@ public class BufferPaddingExecutor {
     }
 
 
-    private Mono<Void> paddingFuture = Mono.empty();
+    //@Getter
+    //private Mono<Void> paddingFuture = Mono.empty();
 
-    public Mono<Void> getPaddingFuture() {
-        return paddingFuture;
+    private CompletableFuture<Void> paddingFuture = null;
+
+    public Mono<Void> requestPadding(long workerId){
+        this.workerId = workerId;
+        if (paddingFuture != null && isRunning() && !paddingFuture.isDone()){
+            return Mono.fromFuture(paddingFuture);
+        }else
+            return Mono.fromFuture(CompletableFuture.runAsync(this::paddingBuffer,bufferPadExecutors));
     }
 
+    public void asyncPadding(long workerId) {
+        this.workerId = workerId;
+        asyncPadding();
+    }
     /**
      * Padding buffer in the thread pool
      */
-    public void asyncPadding() {
-//        Mono.fromFuture(CompletableFuture.runAsync(this::paddingBuffer,bufferPadExecutors)).
-        paddingFuture = Mono.fromFuture(CompletableFuture.runAsync(this::paddingBuffer,bufferPadExecutors)).cache();
+    private void asyncPadding() {
+//        paddingFuture = Mono.fromFuture(CompletableFuture.runAsync(this::paddingBuffer,bufferPadExecutors)).cache();
 //        t.isDone()
-//        bufferPadExecutors.submit(this::paddingBuffer).;
+        paddingFuture = CompletableFuture.runAsync(this::paddingBuffer,bufferPadExecutors);
+        //bufferPadExecutors.submit(this::paddingBuffer);
+
     }
 
     /**
      * Padding buffer fill the slots until to catch the cursor
      */
-    public void paddingBuffer() {
+    private void paddingBuffer() {
 
         log.info("Ready to padding buffer lastSecond:{}. {}", lastSecond.get(), ringBuffer);
 
@@ -162,7 +177,7 @@ public class BufferPaddingExecutor {
             if (providerTime > currentTime){
                 timeIsFutureHandler.timeIsFuture(providerTime,currentTime);
             }
-            List<Long> uidList = uidProvider.provide(providerTime);
+            List<Long> uidList = uidProvider.provide(workerId,providerTime);
             for (Long uid : uidList) {
                 isFullRingBuffer = !ringBuffer.put(uid);
                 if (isFullRingBuffer) {

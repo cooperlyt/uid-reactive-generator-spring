@@ -16,6 +16,7 @@
 package io.github.cooperlyt.cloud.uid.buffer;
 
 import io.github.cooperlyt.cloud.uid.utils.PaddedAtomicLong;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
@@ -44,6 +45,7 @@ public class RingBuffer {
     public static final int DEFAULT_PADDING_PERCENT = 50;
 
     /** The size of RingBuffer's slots, each slot hold a UID */
+    @Getter
     private final int bufferSize;
     private final long indexMask;
     private final long[] slots;
@@ -147,7 +149,7 @@ public class RingBuffer {
      * @return UID
      * @throws IllegalStateException if the cursor moved back
      */
-    public Mono<Long> take() {
+    public Mono<Long> take(long workerId) {
         // spin get next available cursor
         long currentCursor = cursor.get();
         long nextCursor = cursor.updateAndGet(old -> old == tail.get() ? old : old + 1);
@@ -161,13 +163,13 @@ public class RingBuffer {
 
             log.info("Reach the padding threshold:{}. tail:{}, cursor:{}, rest:{}", paddingThreshold, currentTail,
                     nextCursor, currentTail - nextCursor);
-            bufferPaddingExecutor.asyncPadding();
+            bufferPaddingExecutor.asyncPadding(workerId);
         }
 
         // cursor catch the tail, means that there is no more available UID to take
         if (nextCursor == currentCursor) {
             log.info("Buffer empty waiting put");
-            return bufferPaddingExecutor.getPaddingFuture().map(v -> -1L).switchIfEmpty(take());
+            return bufferPaddingExecutor.requestPadding(workerId).then(take(workerId));
             //rejectedTakeHandler.rejectTakeBuffer(this);
         }
 
@@ -225,10 +227,6 @@ public class RingBuffer {
         return cursor.get();
     }
 
-    public int getBufferSize() {
-        return bufferSize;
-    }
-
     /**
      * Setters
      */
@@ -242,13 +240,10 @@ public class RingBuffer {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("RingBuffer [bufferSize=").append(bufferSize)
-               .append(", tail=").append(tail)
-               .append(", cursor=").append(cursor)
-               .append(", paddingThreshold=").append(paddingThreshold).append("]");
-        
-        return builder.toString();
+      return "RingBuffer [bufferSize=" + bufferSize +
+            ", tail=" + tail +
+            ", cursor=" + cursor +
+            ", paddingThreshold=" + paddingThreshold + "]";
     }
 
 }

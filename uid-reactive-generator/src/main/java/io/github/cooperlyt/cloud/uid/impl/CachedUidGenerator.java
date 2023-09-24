@@ -125,7 +125,7 @@ public class CachedUidGenerator extends DefaultUidGenerator implements Disposabl
     @Override
     public Mono<Long> getUID() {
         try {
-            return ringBuffer.take();
+            return workerId.flatMap(id -> ringBuffer.take(id));
         } catch (Exception e) {
             log.error("Generate unique id exception. ", e);
             throw new UidGenerateException(e);
@@ -149,21 +149,19 @@ public class CachedUidGenerator extends DefaultUidGenerator implements Disposabl
      * @param currentSecond
      * @return UID list, size of {@link BitsAllocator#getMaxSequence()} + 1
      */
-    protected List<Long> nextIdsForOneSecond(long currentSecond) {
-        return workerId.blockOptional()
-            .map(workerId -> {
-                // Initialize result list size of (max sequence + 1)
-                int listSize = (int) bitsAllocator.getMaxSequence() + 1;
-                List<Long> uidList = new ArrayList<>(listSize);
+    protected List<Long> nextIdsForOneSecond(long workerId, long currentSecond) {
 
-                // Allocate the first sequence of the second, the others can be calculated with the offset
-                long firstSeqUid = bitsAllocator.allocate(currentSecond - uidProperties.getEpochSeconds(), workerId, 0L);
-                for (int offset = 0; offset < listSize; offset++) {
-                    uidList.add(firstSeqUid + offset);
-                }
+        // Initialize result list size of (max sequence + 1)
+        int listSize = (int) bitsAllocator.getMaxSequence() + 1;
+        List<Long> uidList = new ArrayList<>(listSize);
 
-                return uidList;
-            }).orElseThrow(() -> new IllegalStateException("can`t get worker id."));
+        // Allocate the first sequence of the second, the others can be calculated with the offset
+        long firstSeqUid = bitsAllocator.allocate(currentSecond - uidProperties.getEpochSeconds(), workerId, 0L);
+        for (int offset = 0; offset < listSize; offset++) {
+            uidList.add(firstSeqUid + offset);
+        }
+
+        return uidList;
     }
 
 
@@ -197,10 +195,11 @@ public class CachedUidGenerator extends DefaultUidGenerator implements Disposabl
 
 
         // fill in all slots of the RingBuffer
-        bufferPaddingExecutor.paddingBuffer();
+        //bufferPaddingExecutor.paddingBuffer();
 
         // start buffer padding threads
-        bufferPaddingExecutor.start();
+        workerId.subscribe(id -> bufferPaddingExecutor.start(id));
+        //bufferPaddingExecutor.start();
     }
 
 }

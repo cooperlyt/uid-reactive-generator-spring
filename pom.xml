@@ -6,7 +6,7 @@
 
     <groupId>io.github.cooperlyt</groupId>
     <artifactId>uid-reactive-generator-spring</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2-snapshot</version>
     <packaging>pom</packaging>
 
     <name>uid-reactive-generator-spring</name>
@@ -65,7 +65,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>3.0.3</version>
+                <version>3.1.4</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

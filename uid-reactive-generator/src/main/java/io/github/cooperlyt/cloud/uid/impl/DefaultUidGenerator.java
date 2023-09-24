@@ -152,7 +152,7 @@ public class DefaultUidGenerator implements UidGenerator, InitializingBean, Disp
   protected Mono<Long> nextId() {
     return Mono.just(getCurrentSecond())
         .flatMap(this::idRequest)
-        .flatMap(request -> workerId.share()
+        .flatMap(request -> workerId
             .map(workerId -> bitsAllocator
                 .allocate(request.second - uidProperties.getEpochSeconds(),
                     workerId,
@@ -160,11 +160,8 @@ public class DefaultUidGenerator implements UidGenerator, InitializingBean, Disp
         );
   }
 
-  public Mono<IdRequest> test(){
-    return idRequest(getCurrentSecond());
-  }
 
-  public synchronized Mono<IdRequest> idRequest(long requestSecond){
+  private synchronized Mono<IdRequest> idRequest(long requestSecond){
 
     if (requestSecond < lastSecond){
       long refusedSeconds = lastSecond - requestSecond;
@@ -241,7 +238,7 @@ public class DefaultUidGenerator implements UidGenerator, InitializingBean, Disp
 
   @Override
   public void destroy() throws Exception {
-    workerId.blockOptional().ifPresent(workerId -> workerIdAssigner.releaseWorkerId(workerId, lastSecond));
+    workerId.subscribe(id -> workerIdAssigner.releaseWorkerId(id, lastSecond));
   }
 
   @AllArgsConstructor

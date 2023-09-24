@@ -15,6 +15,8 @@
  */
 package io.github.cooperlyt.cloud.uid.buffer;
 
+import reactor.core.publisher.Mono;
+
 import java.util.List;
 
 /**
@@ -31,5 +33,5 @@ public interface BufferedUidProvider {
      * @param momentInSecond
      * @return
      */
-    List<Long> provide(long momentInSecond);
+    List<Long> provide(long workerId, long momentInSecond);
 }
