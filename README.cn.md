@@ -36,7 +36,7 @@ UidReactiveGenerator是Java实现的, 基于[Snowflake](https://github.com/twitt
 <dependency>
   <groupId>io.github.cooperlyt</groupId>
   <artifactId>uid-reactive-generator-spring-cloud-starter-discovery</artifactId>
-  <version>1.1.1</version>
+  <version>1.2.1</version>
 </dependency>
 
 ... 
@@ -49,7 +49,7 @@ NOTE: 仅在Consul下测试，其它发现服务器没有进行测试。
 <dependency>
   <groupId>io.github.cooperlyt</groupId>
   <artifactId>uid-reactive-generator-db-spring-boot-starter</artifactId>
-  <version>1.1.1</version>
+  <version>1.2.1</version>
 </dependency>
 ```
 * Mybatis JDBC:
